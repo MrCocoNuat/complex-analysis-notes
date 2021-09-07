@@ -1,0 +1,1728 @@
+\documentclass[10pt, oneside]{article} 
+\usepackage{amsmath, amsthm, amssymb, wasysym, verbatim, bbm, color, graphics, geometry, mathtools, cancel}
+
+\geometry{tmargin=.75in, bmargin=.75in, lmargin=.75in, rmargin = .75in}  
+
+%Measured angles!
+\let\angle\measuredangle
+
+%Partial derivatives!
+\let\del\partial
+
+%Easy limits!
+\newcommand{\lti}[1]{\lim_{#1 \rightarrow \infty}}
+\newcommand{\ltz}[1]{\lim_{#1 \rightarrow 0}}
+
+%Path concatenation!
+\newcommand{\cat}{^{\,\smallfrown}}
+
+%Nobody wants to type these over and over again!
+\let\ep\varepsilon
+\let\de\delta
+
+%Stacked numbers without delimiters!
+\newcommand{\stack}[2]{\genfrac{}{}{0pt}{}{#1}{#2}}
+
+%Pretty inequality signs!
+\let\leq\leqslant
+\let\geq\geqslant
+
+%Easy set symbols!
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Cdot}{\boldsymbol{\cdot}}
+
+%Compiler complains when \O is used in math mode, where it ought to be! 
+\let\foo\O
+\renewcommand{\O}{\text{\foo}}
+
+%Tall Floor and Ceil!
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+%Roman functions in math mode!
+\newcommand{\cis}{\text{cis} \,}
+\renewcommand{\Re}{\text{Re} \,}
+\renewcommand{\Im}{\text{Im} \,}
+\newcommand{\Arg}{\text{Arg} \,}
+\newcommand{\sgn}{\text{sgn} \,}
+\newcommand{\Log}{\text{Log} \,}
+\renewcommand{\mod}{\text{mod} \,}
+\newcommand{\Arccos}{\text{Arccos} \,}
+\newcommand{\Arcsin}{\text{Arcsin} \,}
+\newcommand{\Arctan}{\text{Arctan} \,}
+
+\newtheorem{thm}{Theorem}
+\newtheorem{defn}{Definition}
+\newtheorem{conv}{Convention}
+\newtheorem{rem}{Remark}
+\newtheorem{lem}{Lemma}
+\newtheorem{cor}{Corollary}
+
+
+\title{Running Lecture Outline: MC521QCM Complex Calculus}
+\author{Aaron Wang}
+\date{Academic Year 2019-2020}
+
+\begin{document}
+
+\maketitle
+Note: All addendums to a day made afterwards will be silently appended to that day
+\tableofcontents
+
+\vspace{.25in}
+
+\section{Fall 2019}
+
+\subsection{Sept 9: What is $\R$?}
+\begin{itemize}
+    \item Here, $\R$ is defined axiomatically for convenience (starting from ZF is another course altogether):
+    \begin{itemize}
+        \item The binary addition operation , $+$, exists; $\forall x,y,z\in\R$:
+        \begin{itemize}
+            \item $x+y=w \Rightarrow w\in \R$ (closure)
+            \item $x+y=y+x$  (commutativity)
+            \item $(x+y)+z=x+(y+z)$  (associativity)
+            \item $\exists 0,x+0=x$  and 0 is the unique element of $\R$ that makes this true (identity)
+            \item $\exists (-x), x+(-x)=0$  and $-x$ is the unique element of $\R$ that makes this true (invertibility)
+            \item In short, $\R$ and $+$ form an abelian group
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\subsection{Sept 10: More axioms for $\R$}
+\begin{itemize}
+    \item $\R \backslash \{0\}$ and $\Cdot$ form an abelian group.
+    \item $\forall x,y,z \in \R, x \Cdot (y+z)=(x \Cdot y)+(x \Cdot z)$ (distributivity of multiplication over addition)
+    \item Given $0\neq1$, which will be assumed, $0$ cannot have a real multiplicative inverse; this can be found by proving:\\
+    \begin{align*}
+        (\forall x \in \R), x \Cdot 0&=0\\
+        \\
+        x \Cdot 0&=y\\
+        x \Cdot 0+x \Cdot 0&=y+y\\
+        x \Cdot (0+0)&=y+y\\
+        x \Cdot 0&=y+y\\
+        y&=y+y\\
+        0&=y\\
+        \therefore x \Cdot 0&=0 \\
+    \end{align*}
+    If $z$ was the multiplicative inverse of $0$, $z \Cdot 0=1$, an obvious contradiction
+    \item $\R^+$ is closed under $+, \Cdot $
+    \item $1\in\R^+, 0\notin\R^+$, thus $0\neq1$
+    \item $x \in \R^+ \lor x=0 \lor x\in\R^-$
+    \item continued...
+\end{itemize}
+
+\subsection{Sept 11: Limits of Sequences}
+\begin{itemize}
+    \item Completeness Axiom for $\R$:
+        \[S \subseteq \R \land S \neq \O \land \Big( \exists b \in \R : S \subseteq (-\infty,b] \Big) \Rightarrow \exists! \, l : \Big( S\subseteq (-\infty,l] \land (\forall \varepsilon > 0) (S \not\subseteq (-\infty,l-\varepsilon]) \Big)\]
+        $\sup S = l$, and $\inf S$ is defined similarly
+    \item As a consequence, the elements of a set $S$ must be arbitrarily close to its supremum:
+        \[(\forall \varepsilon > 0)(\exists x_\varepsilon \in S : |\sup S - x_\varepsilon | < \varepsilon)\]
+    If a upper bound $l$ is not arbitrarily close to the elements of $S$, then it is not the supremum; assume:
+        \[\lnot(\forall \varepsilon > 0)(\exists x_\varepsilon \in S : | l - x_\varepsilon | < \varepsilon)\]
+    The negation of $1^{\rm st}$ order logic statements can be performed as below:
+    \begin{itemize}
+        \item $\lnot(\forall x)(p) \Leftrightarrow (\exists x:\lnot p)$
+        \item $\lnot(\exists x:q) \Leftrightarrow (\forall x)(\lnot q)$
+    \end{itemize}
+    Simplify the above statement to:
+        \[\exists \varepsilon_0 > 0 : (\forall x_{\varepsilon_0} \in S) (| l - x_{\varepsilon_0} | \geq \varepsilon_0)\]
+    However, this would imply, for example:
+        \[(\forall x_{\varepsilon_0} \in S) \left( x \leq l - \frac{\varepsilon}{2} \right)\]
+    $\therefore l$ is not the least upper bound, or $l \neq \sup S$
+    \item BMCT, or Bounded Monotonic Convergence Theorem:
+        \[(\forall n \geq 1)(a_n \leq a_{n+1} \land \exists b : b \geq a_n) \Rightarrow \exists l \in \R : a_n \rightarrow l\]
+        \[l = \sup \{a_n|n \geq 1\} \]
+\end{itemize}
+
+\subsection{Sept 12: What is $\C$?}
+\begin{itemize}
+    \item The idea of $\C$ extends somewhat naturally from $\R ^ 2$, which has nice built-in properties:
+    \begin{itemize}
+        \item Vector addition: $(a,b)+(c+d)=(a+c,b+d)$, and its identity $(0,0)$
+        \item Vector scaling: $c \Cdot (a,b)=(ca,cb)$, abbreviated to $c(a,b)$, and its identity $1$
+    \end{itemize}
+    \item Strictly, $\R \subseteq \R ^ 2$, and we want something close to $\R \subseteq \C$, so we must use "real" numbers of the form $(a,0) \in \R'$ - and write them conventionally as $a$
+    \item Multiplication in $\C$ is defined as $(a,b) \Cdot (c,d)=(ac-bd,ad+bc)$, abbreviated to $(a,b)(c,d)$, which turns $\C$ into an abelian group
+    \item This definition arises from the search for a central direct isometry, or rotation, in analytic geometry; the rotation of the point $(x,y)$ about $(0,0)$ is $(ax-by,bx+ay)$ for any $a,b$ satisfying $a^2+b^2=1$
+    \item Defined as a product in $\C$, it is equal to $(a,b) \Cdot (x,y)$
+\end{itemize}
+
+\subsection{Sept 13: $\C$ is a field}
+\begin{itemize}
+    \item Vector addition and $\C$ form an abelian group
+    \item $\C$ is closed under multiplication; $(ac-bd,ad+bc) \in \C$ 
+    \item Multiplication in $\C$ is obviously commutative:
+        \[(a,b)(c,d) = (ca-db,da+cb) = (c,d)(a,b)\]
+    \item Multiplication also has an identity element,$(1,0)$:
+        \[(a,b)(1,0) = (a \Cdot 1 - b \Cdot 0, b \Cdot 1 + a \Cdot 0) = (a,b)\]
+    \item Invertibility of $ \Cdot $ is easy to check:
+        \[(a,b) \neq 0\]
+        \[(a,b)(x,y) = 1\]
+        \[ax-by = 1 \land bx+ay = 0\]
+        \[a^2 x - bay = a \land b^2 x + aby = 0\]
+        \[(a^2 + b^2)x = a\]
+        \[(a^2 + b^2)y = -b\]
+        \[(x,y) = \Big( \frac{a}{a^2+b^2},\frac{-b}{a^2+b^2} \Big)\]
+    \item Associativity of $ \Cdot $ is more tedious:
+        \[(a,b)(c,d)(e,f) = (a,b)(c,d)(e,f)\]
+        \[(ac-bd,ad+bc)(e,f) = (a,b)(ce-df,cf+de)\]
+        \[(eac-bde-fcd-fbc,acf-bdf+ade+bce) = (ace-adf-bcf-bde-bdf+bce+acf+ade)\]
+    \item Finally, distributivity of $ \Cdot $ over $+$ must be checked:
+        \[(a,b)(c+e,d+f) = (a,b)(c,d) + (a,b)(e,f)\]
+        \[(ac+ae-bd-bf,ad+af+bc+be)=(ac-bd+ae-bf,bc+ad+af+be)\]
+    \item Therefore, $\C$ is a field.
+    \item These favorable properties of $\C$ are possible because it is built on $\R^2$, other number systems extended this way include:
+    \begin{itemize}
+        \item $\R$ is a field, and the simplest complete number system
+        \item $\C$, isomorphic to $\R^2$, is not ordered
+        \item $\mathbb{H}$, isomorphic to $\R^4$, is not a field; $\Cdot$ is noncommutative but still associative
+        \item $\mathbb{O}$, isomorphic to $\R^8$, $\Cdot$ is nonassociative, but still L/R alternative $x(xy)=(xx)y$ and flexible $x(yx)=(xy)x$
+        \item $\mathbb{S}$, isomorphic to $\R^{16}$, does not even have alternative/flexible multiplication; not a composition algebra
+        \item Infinite Cayley-Dickinsons are possible; for $\Cdot$ only weak power-associativity $x(xx)=(xx)x$ remains 
+    \end{itemize}
+\end{itemize}
+
+\subsection{Sept 16: $a+bi$}
+\begin{itemize}
+    \item Writing $(a,b)$ all the time is annoying:
+    \begin{align*}
+        (a.b) &= (a,0) + (0,b)\\
+        &= a + (0,b)\\
+        &= a + b(0,1)
+    \end{align*}
+    Define $i$ as $(0,1)$, because nobody wants to write $(0,1)$.
+    \item Is our usage of $i$ consistent with the property that $ii = -1$?
+        \[ii = (0,1)(0,1) = (0-1,0+0) = (-1,0) = -1\]
+    \item Exponentiation by an integer in $\C$:
+    \begin{align*}
+        z^0 &:= 1\\
+        z^k &= z \Cdot z^{k-1}
+    \end{align*}
+    \item Why can't $\C$ be ordered?
+    \begin{itemize}
+        \item Assume sets $\C^+$ and $\C^-$ existed, were closed under $ \Cdot $, and those along with $\{0\}$ disjointly partitioned $\C$
+        \item For these constructs to be useful, we need $\R^+ \subseteq \C^+$ and $\R^- \subseteq \C^-$
+        \item $i \neq 0$, let $i \in \C^+$, then $i^2 = -1 \in \C^+$ which is very bad
+        \item Since that fails, let $i \in \C^-$, then $i^4 = 1 \in \C^-$ which is also very bad
+    \end{itemize}
+\end{itemize}
+
+\subsection{Sept 17: Properties of Stretch Rotation}
+\begin{itemize}
+    \item Complex addition is equivalent to a translation of the plane: $T_w (z) = z+w$ 
+    \item Complex multiplication is equivalent to rotation and dilation: $S_w (z) = wz$
+    \item Preservation of orientation in multiplication can be shown by computing:\\
+        \[\text{det}
+        \begin{bmatrix}
+            \alpha & -\beta\\
+            \beta & \alpha\\ 
+        \end{bmatrix}
+        = \alpha^2 + \beta^2 > 0 \text{  if  } \alpha + \beta i  \neq 0\]
+    \item This can be checked for in general; the points $(0,0),(2,0),(0,3)$ are in a CCW circuit: det 
+    $\begin{bmatrix}
+        2 & 0\\
+        0 & 3\\
+    \end{bmatrix}$
+    $= 6$.
+    For the transformation 
+    $\begin{bmatrix}
+        \alpha & \beta \\
+        \gamma & \delta\\
+    \end{bmatrix}$
+    to preserve orientation, the result of the circuit must still be CCW: det
+    $\begin{bmatrix}
+        2\alpha & 3\beta \\
+        2\gamma & 3\delta
+    \end{bmatrix}$
+    $> 0$
+    \item The norm of a complex number is simply: $|a + bi| = \sqrt{a^2 + b^2}$.
+    Based on this, dist$(z,w)$ is equal to $|z-w|$
+    \item When does a stretch rotation preserve distances?$a + bi$ must be unimodular, or $|a + bi|$ must be $1$ for this to happen.\\
+    What if $|a + bi| \notin \{0,1\}$? Then the rotation is performed with unimodular complex number $\frac{a + bi}{|a + bi|}$, and the result is scaled by $|a + bi|$.
+\end{itemize}
+
+\subsection{Sept 18: Properties of $|z|$ and $\bar{z}$}
+\begin{itemize}
+    \item The conjugate of $a + bi$, $\overline{a + bi} = a - bi$
+    \item This is equivalent to a reflection over the real axis, or $F_{y=0}$
+    \item Some properties of  $|z|$ and $\bar{z}$:
+    \begin{itemize}
+        \item $z \bar{z} = |z|^2$\\
+        $(a + bi)(a - bi) = a^2,b^2$
+        \item $z + \bar{z} = 2 \, \rm Re \it (z)$\\
+        $(a + bi) + (a - bi) = 2a$
+        \item $z - \bar{z} = 2i \, \rm Im \it (z)$\\
+        $(a + bi) - (a - bi) = 2bi$
+        \item $|z| = |\bar{z}|$\\
+        Reflection is an isometry
+        \item $\overline{z + w} = \bar{z} + \bar{w}$\\
+        $(a+b -(c+d)i) = (a - bi) + (c - di)$
+        \item $\overline{zw} = \bar{z} \bar{w}$\\
+        $(ac - bd - (ad + bc)i) = (a - bi)(c - di)$
+        \item $|zw| = |z||w|$\\
+        $\sqrt{(ac-bd)^2 + (ad+bc)^2} = \sqrt{(ac)^2 + (bd)^2 - 2abcd + (ad)^2 + (bc)^2 + 2abcd} = \sqrt{(a^2 + b^2)(c^2 + d^2)}$
+    \end{itemize}
+\end{itemize} 
+
+\subsection{Sept 19: Trigonometry}
+\begin{itemize}
+    \item Taylor Series can define $sin$, but proving any of the usual properties is very hard
+    \item $e^{i\theta}$ is hard to use because complex sequence convergence is not well defined at this point
+    \item The starting point is defining $\pi$
+    \item Take the unit-semicircle above the real axis.
+        Call $i$ point $p_1 = (a_1 , b_1)$
+        Call the point on the semicircle halfway between $p_n$ and $1$ $p_{n+1}$
+    \item We can find the coordinates of $p_{n+1} = (a_{n+1}, b_{n+1})$ in general:
+        Let the midpoint of the line segment between $1$ and $p_n$ be $m_n = (\frac{1 + a_n}{2},\frac{b_n}{2})$
+        Normalize $m_n$ to $p_{n+1}$, then the real part of $p_{n+1}$ is 
+        \[a_{n+1} := \frac{a_n + 1}{2 \sqrt{\big( \frac{1+a_n}{2} \big) ^2 + \big( \frac{b_n}{2} \big) ^2}} = \frac{a_n + 1}{2 \sqrt{\frac{a_n + 1}{2}}} = \sqrt{\frac{a_n + 1}{2}}\]
+    \item This recursion formula, with the start term $a_1 \in [0,1]$, never fails to give the next term:
+    \begin{align*}
+        0 \leq \, & a_n \leq 1\\
+        1 \leq \, & a_n + 1 \leq 2\\
+        \frac{1}{2} \leq \, & \frac{a_n + 1}{2} \leq 1\\
+        0 \leq \sqrt{\frac{1}{2}} \leq \, & a_{n+1} \leq 1\\
+    \end{align*}
+    \item The formula also gives increasing terms:
+    \begin{align*}
+        0 \leq a_n \leq & \, \frac{a_n + 1}{2} \leq 1\\
+        & \frac{a_n + 1}{2} \leq \sqrt{\frac{a_n + 1}{2}}\\
+        & a_n \leq a_{n+1} \leq 1\\
+    \end{align*}
+    \item $a_n$ and $b_n$ are components of unimodular points so $b_n = \sqrt{1 - a_n^2}$
+    \item It can be shown that $(a_n)$ approaches $1$ at a exponential speed:
+        \[1 - a_n \leq \frac{1}{2} (1 - a_{n-1}) \leq \frac{1}{4} (1 - a_{n-2}) \, ... \leq \frac{1}{2^{n-1}} (1 - a_1) = \frac{1}{2^{n-1}}\]
+        This is shown by the reversible deduction:
+        \[1 - a_{n+1} \leq \frac{1}{2} (1 - a_n)\]
+        \[2 - 2 \sqrt{\frac{a_n + 1}{2}} \leq (1 - a_n)\]
+        \[1 + a_n \leq 2\sqrt{\frac{a_n + 1}{2}}\]
+        \[1 + a_n^2 + 2 a_n =\leq2 a_n + 2\]
+        \[a_n^2 \leq 1\]
+    The rightmost term is arbitrarily small, so the first term is too.
+\end{itemize}
+
+\subsection{Sept 20: Defining $\pi$}
+\begin{itemize}
+    \item Convergence of complex series:
+        \[p_n \rightarrow l \Rightarrow (\forall \varepsilon > 0) \big( \exists N : ( n > N \Rightarrow |l - p_n| < \varepsilon ) \big)\]
+    This can be done coordinatewise too
+        \[p_n \rightarrow l \Leftrightarrow {\rm Re} \, p_n \rightarrow {\rm Re} \, l \Leftrightarrow {\rm Im} \, p_n \rightarrow {\rm Im} \, l\]
+    \item $\pi$ is the half-circumference of the semicircle, so two sets of broken lines that converge to it will give the value of $\pi$
+    \item Let $l_n = |1-p_n| = \sqrt{2 - 2a_n}$
+    \item $A_n = 2^n l_n$ is the sum of the lengths of $2^n$ equal line segments spanning inside the semicircle; it is increasing
+    \item $B_n = 2^n \frac{b^n}{a_n}$ is the sum of the lengths of $2^n$ equal line segments covering the outside of the semicircle; it is decreasing
+    \item Both $A_n$ and $B_n$ are bounded by $\pi$, above and below, respectively
+    \item $|A_n - B_n| \rightarrow 0$ at exponential speed, so the two limits must be equal
+    \item By the BMCT, 
+        \[\pi = \lti{n} A_n = \lti{n} B_n\]
+\end{itemize}
+
+\subsection{Sept 23: Properties of $A_n$ and $B_n$}
+\begin{itemize}
+    \item Critical fact:
+    \[p_n^{2^n} = p_{n-k}^{2^{n-k}}\]
+    This follows directly from complex multiplication and how $(p_n)$ was obtained
+    \item $(A_n)$ can be proven to increase by the reversible deduction:
+    \begin{align*}
+        2^n l_n & \leq 2^{n+1} l_{n+1}\\
+        l_n & \leq 2 l_{n+1}\\
+        l_n^2 & \leq 4 l_{n+1}^2\\
+        2 - 2 a_n & \leq 8 - 8 a_{n+1}\\
+        4 a_{n+1} & \leq 3 + a_n\\
+        16 a_{n+1}^2 & \leq 9 + a_n^2 + 6 a_n\\
+        8 + 8a_n & \leq 9 + a_n^2 + 6 a_n\\
+        0 & \leq a_n^2 - 2 a_n + 1\\
+        0 & \leq (a_n - 1)^2\\
+    \end{align*}
+    \item $(B_n)$ receives the same treatment:
+    \begin{align*}
+        \frac{2^n b_n}{a_n} & \geq \frac{2^{n+1} b_{n+1}}{a_{n+1}}\\
+        b_n a_{n+1} & \geq 2 b_{n+1} a_n\\
+        b_n^2 a_{n+1}^2 & \geq 4 b_{n+1}^2 a_n^2\\
+        (1 - a_n^2) \Big( \frac{1 + a_n}{2} \Big) & \geq 4 \Big( 1 - \frac{1 + a_n}{2} \Big) a_n^2\\
+        (1 + a_n)(1 - a_n)(1 + a_n) & \geq 4 (2 - 1 - a_n) a_n^2\\
+        (1 + a_n)^2 & \geq 4 a_n^2\\
+        (1 + a_n) & \geq 2 a_n\\
+        1 & \geq a_n
+    \end{align*}
+    \item Finally, the bounds placed on $|A_n - B_n|$:
+    \begin{align*}
+        & 2^n \Big( \frac{b_n}{a_n} - l_n \Big)\\
+        \leq \, & 2^n \Big( \frac{b_n}{a_n} - b_n \Big)\\
+        = \, & 2^n b_n \Big( \frac{1}{a_n} - 1 \Big)\\
+        \leq \, & 2^n l_n \Big( \frac{1}{a_n} - 1 \Big)\\
+        = \, & A_n \Big( \frac{1}{a_n} - 1 \Big)\\
+        \leq \, & B_n \Big( \frac{1 - a_n}{a_n} \Big)\\
+        \leq \, & B_2 \Big( \frac{1 - a_n}{a_2} \Big)\\
+        \leq \, & 4 \sqrt{2} \Big( \frac{1}{2^{n-1}} \Big)  
+    \end{align*}
+\end{itemize}
+
+\subsection{Sept 24: $\cis \theta$}
+\begin{itemize}
+    \item $\cis \theta \in \C$, and $\theta \in \R$, cis $\theta = (-1)^{\frac{\theta}{\pi}}$
+    \item This expression is not well defined for any non-integer $\frac{\theta}{\pi}$
+    \item Realize that $p_n$ is the $2^{n \rm{-th}}$ root of $-1$, since $p_n$ was defined by tracing along the unit circle from $-1$ to $1$
+    \item This means that we can define $(-1)^{\frac{\theta}{\pi}}$ for any dyadic $\frac{\theta}{\pi}$, since it is easy to raise to an integer power
+    \item It is also easy to show that some sequence of dyadics converges to any rational number, and some sequence of rationals converges to any real
+\end{itemize}
+
+\subsection{Sept 25: $(-1)^t$ for real $t$, $\floor{x}$ and $\ceil{x}$}
+\begin{itemize}
+    \item We can define real exponents of $-1$ as
+        \[(-1)^t := \lti{n} p_n^{\floor{2^n t}}\]
+    \item Properties of $\floor{x}$ and $\ceil{x}$:
+        \[\floor{x} + \floor{y} \leq \floor{x+y} \leq \floor{x} + \floor{y} + 1\]
+        Consequently a lossy identity, 
+        \[k \floor{x} \leq \floor{kx} \leq k \floor{x} + 1\]
+    \item The dyadic sequences that approach and bound $t$ are
+        \[d^-_n = \frac{\floor{2^n t}}{2^n} \quad d^+_n = \frac{\ceil{2^n t}}{2^n}\]
+    \item It is clear that $d_n^-$ and $d_n^+$ approach each other:
+        \[\frac{|\ceil{2^n t} - \floor{2^n t}|}{2^n} \leq \frac{1}{2^n}\]
+        The sequences are bounded above and below respectively by $t$:
+        \[\floor{2^n t} \leq 2^n t \leq \ceil{2^n t}\]
+        $d_n^-$ is increasing:
+        \[\frac{\floor{2^n t}}{2^n} \leq \frac{\floor{2^{n+1} t}}{2^{n+1}} \Leftrightarrow 2 \floor{2^n t} \leq \floor{2^{n+1} t}\]
+        $d_n^+$ is decreasing, similarly
+    \item Therefore, the limits of both sequences is $t$:
+        \[(-1)^t := \lti{n} (-1)^{d_n^-}\]
+        This definition is identical to the previous, from the definition of $d_n^-$
+    \item Complex sequences that are cauchy are convergent; a cauchy complex sequence has cauchy real and imaginary part sequences, which converge, so the original sequence does too.
+    \item To prove that this definition of $(-1)^t$ will actually follow the expected laws of exponents, prove that it is convergent and cauchy.
+        \[\text{Let n = m + k, k $>$ 0} \quad \quad ((-1)^t)_m - ((-1)^t)_n = \Big| p_m^{\floor{2^m t}} - p_n^{\floor{2^n t}} \Big|\]
+        \[= \Big| p_{m+k}^{\floor{2^m 2^k t}} - p_{m+k}^{2^k \floor{2^m t}} \Big|\]
+        \[\text{By repeated application of the lossy identity, } 2^k \floor{2^m t} \leq \floor{2^k 2^m t} \leq 2^k \floor{2^m t} + 2^k - 1\]
+        \[\floor{2^k 2^m t} - 2^k \floor{2^m t} \leq 2^k - 1\]
+        \[\Big| {p_{m+k}^{\floor{2^m 2^k t}} - p_{m+k}^{2^k \floor{2^m t}}} \Big| \leq (2^{k - 1}) l_{m+k}\]
+\end{itemize}
+
+\subsection{Sept 26: Trigonometric Identities}
+\begin{itemize}
+    \item The most important thing to do now is to prove $(-1)^t (-1)^s = (-1)^{t+s}$ for real $t, s$
+        \begin{align*}
+            (-1)^{t+s} = \lti{n} p_n^{\floor{2^n (t + s)}} & = \lti{n}  p_n^{\floor{2^n t + 2^n s}}\\
+            & = \lti{n}  p_n^{\floor{2^n t} + \floor{2^n s} + \varepsilon}, \varepsilon \in \{0,1\}\\
+            & = \lti{n}  p_n^{\floor{2^n t}} p_n^{\floor{2^n s}} + p_n^\varepsilon \text{which is valid because the exponents are integers}\\
+            & = \lti{n}  p_n^{\floor{2^n t}} \lti{n}  p_n^{\floor{2^n s}} \lti{n}  p_n^\varepsilon\\
+            & = (-1)^t (-1)^s \lti{n} p_n^\varepsilon
+        \end{align*}
+        \[p_n^\varepsilon = 
+            \begin{cases}
+                1, & \text{for } \varepsilon = 0, \, \lti{n} 1 = 1\\
+                p_n, & \text{for } \varepsilon = 1, \, \lti{n} p_n = 1\\
+            \end{cases}\]
+    \item Recall $\cis \theta = (-1)^{\frac{\theta}{\pi}}$, $\cos \theta = \Re \cis \theta$, $\sin \theta = \Im \cis \theta$
+    \item The Pythagorean Identity: $\sin^2 \theta + \cos^2 \theta = |\cis \theta|^2 = 1$
+    \item Periodicity: $\cis (\theta + 2\pi) = (-1)^{\frac{\theta + 2\pi}{\pi}} = (-1)^{\frac{\theta}{\pi}} (-1)^2 = \cis \theta$
+    \item Addition: $\cis(\theta + \phi) = (-1)^{\frac{\theta + \phi}{\pi}} = (-1)^{\frac{\theta}{\pi}} (-1)^{\frac{\phi}{\pi}} = \cis \theta \; \cis \phi$
+        \begin{itemize}
+            \item $\cos(\theta + \phi) = \cos \theta \; \cos \phi - \sin \theta \; \sin \phi$
+            \item $\sin(\theta + \phi) = \cos \theta \; \sin \phi + \sin \theta \; \cos \phi$
+        \end{itemize}
+    \item Parity: 
+        \begin{itemize}
+            \item $\cos \theta = \cos (- \theta)$
+            \item $\sin \theta = - \sin (- \theta)$
+            \item $\cis \theta = \overline{\cis (-\theta)}$\\
+                This is also true from the fact that $\cis(\theta - \theta) = 1$ and $z \bar{z} = |z|^2$
+        \end{itemize}
+\end{itemize}
+
+\subsection{Sept 27: Euler's Beginnings}
+\begin{itemize}
+    \item It is possible to find $\cis \frac{\pi k}{2^n}$ exactly, since that is equal to $p_n^k$
+    \item Additionally, certain other values are possible, as roots of lower-degree polynomials, like $(\cis \frac{\pi}{3})^3 + 1 = 0$
+    \item $e^{i \theta}$ can be defined as $\lti{n} (1 + \frac{i \theta}{n})^n$, inspired from the definition of $e^x$
+    \item It must first be determined that $e^x = \lti{n} (1 + \frac{1}{n})^n$ follows the rules of exponents at all; call it $E(x)$ to avoid assumption
+    \item If $x > 0$, binomial expansion shows, $(1 + \frac{x}{n})^n \leq (1 + \frac{x}{n+1})^{n+1}$, and by some arbitrary bounding choices, $(1 + \frac{x}{n})^n \leq 6^{\ceil{x}}$
+    \item If $x = 0$, the sequence is constantly $1$
+    \item If $x < 0$, then $(1+\frac{x}{n})(1-\frac{x}{n})$ can be proven to approach $1$, and $E(x)$ is nonzero finite, so $E(x)$ must be finite as well
+    \item Then $E(x)$ is at least always convergent
+\end{itemize}
+
+\subsection{Oct 3: Defining $e^x$}
+\begin{itemize}
+    \item $E(x+y) = E(x)E(y)$, very reminiscent of an exponential function
+        \[E(x)E(y) = \lti{n} \Big( 1 + \frac{x+y}{n} + \frac{xy}{n^2} \Big) ^n\]
+        \[= \lti{n} \Big( 1 + \frac{x+y}{n} \Big) ^n \bigg( 1 + \frac{\frac{xy}{n^2}}{1 + \frac{x+y}{n}} \bigg)\]
+        \[= E(x+y) \lti{n} \Big( 1 + \frac{xy}{n^2 + n(x+y)} \Big)^n\]
+        \[= E(x+y) \text{ obtained from expanding the limit above}\]
+    \item $E(nx) = E(x)^n$ for any rational $n$, which combined with the observation that $E(1) = e$, means $E(x)$ agrees with $e^x$ for rational $x$
+    \item $E(0) = 1$
+    \item $E(-x) = \frac{1}{E(x)}$, following from the properties above
+    \item $\displaystyle E(x) = 1 + \lti{n} \sum_{k=1}^n \Big\langle \stack{n}{k} \Big\rangle \frac{x^k}{k!} $ where $\displaystyle \Big\langle \stack{n}{k}\Big\rangle = \prod_{b = 1}^{k-1} \Big( 1 - \frac{b}{n} \Big) \in (0,1)$ as long as $n$ is positive and always greater than $k - 1$, which is true in this usage.
+\end{itemize}
+
+\subsection{Oct 4: More $e^x$}
+\begin{itemize}
+    \item It is possible to put bounds on $e$
+        \[\lti{n} \Big( 1 + \frac{1}{n} \Big) ^n > \Big( 1 + \frac{1}{3} \Big) ^3 = \frac{64}{27}\]
+        \[\lti{n} \Big( 1 + \frac{1}{n} \Big) ^n < 1 + 1 + \frac{1}{2} + \frac{1}{6} + \sum_{k = 4}^\infty \frac{1}{2^k} = \frac{67}{24}\]
+    \item $E(x)$ is always positive:\\
+        When $x = 0$, $E(x) = 1$, and the function is increasing, so $E(x)$ is greater than 1 for any positive $x$\\
+        $E(x)E(-x) = 1$, so $E(x)$ must be positive and less than $1$ for negative $x$
+\end{itemize}
+
+\subsection{Oct 7: $e^x = \frac{d}{dx} e^x$}
+\begin{itemize}
+    \item The titular fact is proven:
+        \[\frac{d}{dx} e^x = \ltz{h} \frac{e^{x+h} - e^x}{h} =  e^x \ltz{h} \frac{e^h - 1}{h}\]
+        \[\text{If h is positive, } h  = \Big( 1 + \frac{h}{1} \Big) ^1 - 1 < e^h - 1 = \lti{n} \sum_{k=1}^n \Big\langle \stack{n}{k} \Big\rangle \frac{h^k}{k!} < \lti{n} \sum_{k=1}^\infty h^k = \frac{h}{1-h}\]
+        Divide by $h$ globally, and $\frac{e^h - 1}{h}$ is squeezed to $1$\\
+        If $h$ is negative, the lower bound still holds when $n$ is larger than $|h|$, not a problem as it approaches $0$, but:
+        \[\frac{e^h - 1}{h} =  \lti{n} \sum_{k=1}^n \Big\langle \stack{n}{k} \Big\rangle \frac{h^{k-1}}{k!} < \lti{n} \sum_{k=1}^n \Big\langle \stack{n}{k} \Big\rangle \frac{|h|^{k-1}}{k!} < \frac{1}{1-|h|}\]
+        Squeeze similarly to $1$
+    \item Imaginary powers of $e$ are logically defined:
+        \[e^{i \theta} = \lti{n} \Big( 1 + \frac{i \theta}{n} \Big) ^n\]
+\end{itemize}
+
+\subsection{Oct 8: Polar Form}
+\begin{itemize}
+    \item $\Arg z$ is the angle from the real axis to $z$ in the complex plane, in $(-\pi,\pi]$
+        \[\Arg z = \Arg (x + yi) = \begin{cases}
+            -\pi, z \in \R^-\\
+            (\sgn y) \arccos \bigg( \displaystyle \frac{x}{\sqrt{x^2 + y^2}} \bigg), z \notin \R^-
+        \end{cases}\]
+    \item $\Arg z$ is always defined unless $z = 0$, because $\displaystyle \bigg| \frac{x}{|z|} \bigg| \leq 1$, so its arccosine is always defined
+    \item Any complex number $z = x + yi$ other than $0$ can be written as $|z| \, \cis(\Arg z)$, since the norm and argument of such a number is always defined. If $z \in \R$, the proof is rather literal, and if $z \notin \R$:
+        \[|z| \cos \bigg( \arccos \bigg( \frac{x}{\sqrt{x^2 + y^2}} \bigg) \bigg) = x\]
+        \[|z| i \sin \bigg( \arccos \bigg( \frac{x}{\sqrt{x^2 + y^2}} \bigg) \bigg) = |z| i \frac{y}{|z|} = yi\]
+\end{itemize}
+
+\subsection{Oct 10: $\frac{\sin 0}{0}$}
+\begin{itemize}
+    \item The geometric proof that $\displaystyle \ltz{x} \frac{\sin x}{x} = 1$ is lacking in rigor from area definition to floaty length comparisons
+    \item $k \geq 0 \Rightarrow \sin(kx) \leq k\sin(x)$ by induction, since $\sin(kx + x) \leq (k + 1)\sin(x)$ and the base case $k = 0$ is obvious
+    \item Using prior knowledge of the behavior of $\sin$ at dyadics, let $k,n \in \N$:
+        \[\frac{\sin(\frac{k_n \pi}{2^n})}{\frac{k_n \pi}{2^n}} \leq \frac{\sin(\frac{\pi}{2^n})}{\frac{\pi}{2^n}} = \frac{2^n b_n}{\pi} \leq \frac{2^n l_n}{\pi} \leq 1\]
+        Let $k_n = \floor{\frac{2^n \theta}{\pi}}$
+        \[\lti{n} \frac{\sin(\frac{k \pi}{2^n})}{\frac{k \pi}{2^n}} = \frac{\sin(\theta)}{\theta} \leq 1\]
+    \end{itemize}
+
+\subsection{Oct 15: $\frac{\sin (-0)}{(-0)}$}
+\begin{itemize}
+    \item For appropriately small positive $\theta$,
+        \[\tan((k+1) \theta) = \frac{\tan k\theta + \tan \theta}{1 - \tan k\theta \tan \theta} \geq \tan k\theta + \tan \theta \geq (k+1)\tan \theta\]
+    From the base case $k = 0$, inductively, the inequality is true.
+    \item Using prior knowlege of the behavior of $\sin$ and $\cos$ at dyadics, again:
+        \[\tan(\frac{k \pi}{2^n}) \geq k \tan(\frac{\pi}{2^n}) = k \frac{b_n 2^n}{a_n 2^n}\]
+        Let $k_n = \floor{\frac{2^n \theta}{\pi}}$, and recall that $\displaystyle \lti{n} a_n = 1, \lti{n} 2^n b^n = \pi$
+        \[\tan \theta \geq \lti{n} k \frac{b_n 2^n}{a_n 2^n} = \lti{n} \frac{k \pi}{2^n} = \theta\]
+    \item With $\sin \theta \leq \theta \leq \tan \theta$ for positive $\theta$, the limit is proved as before
+\end{itemize}
+
+\subsection{Oct 21: Exponentials and Logarithms}
+\begin{itemize}
+    \item Define $\displaystyle e^{i \theta} := \lti{n} \Big( 1 + \frac{1}{n} \Big) ^n = \cis \theta$
+    \item When $\Re z > 0$, the argument is equal to $\arctan(\frac{\Im z}{\Re z})$:
+        \[1 + \frac{i \theta}{n} = \sqrt{1 + \frac{\theta^2}{n^2}} \cis \Big( \arctan \frac{\theta}{n}\Big)\]
+        \[\Big( 1 + \frac{i \theta}{n} \Big) ^ n = \sqrt{\Big( 1 + \frac{\theta ^2}{n^2}\Big)} \cis \Big(n \arctan \frac{\theta}{n}\Big)\]
+        \[\lti{n} \Big( 1 + \frac{i \theta}{n} \Big) ^ n = \sqrt{1} \, \cis \Big( \lti{n} n \arctan \frac{\theta}{n}\Big)\]
+        \[\frac{\tan\Big( \arctan \Big( \frac{\theta}{n} \Big) \Big)}{\arctan \Big( \frac{\theta}{n} \Big)} = \frac{\frac{\theta}{n}}{\arctan \Big( \frac{\theta}{n} \Big)}\]
+        \[\lti{n} \frac{\tan\Big( \arctan \Big( \frac{\theta}{n} \Big) \Big)}{\arctan \Big( \frac{\theta}{n} \Big)} = 1 = \lti{n} \frac{\frac{\theta}{n}}{\arctan \Big( \frac{\theta}{n} \Big)}\]
+        \[\lti{n} \Big( 1 + \frac{i \theta}{n} \Big) ^ n = \cis \theta\]
+    \item The property $e^{x + y} = e^x e^y$ still holds:
+    \item By the Fundamental Theorem of Engineering, $e^{2 + 3i} = e^2 \cis 3 = 3^2 \cis \pi = -9$
+    \item Logarithms are not one-to-one! The principal logarithm, hereafter with the sole base $e$, $\Log z = \ln |z| + i \, \Arg z$
+\end{itemize}
+
+\subsection{Oct 22: Properties of the Exponential}
+\begin{itemize}
+    \item $e^{\Log z} = e^{\ln|z| + i \Arg z} = |z| e^{i \Arg z} = |z| \cis(\arg(z)) = z$
+    \item $\Log(e^z) = \ln|e^z| + i \Arg(e^z) = \ln|e^a \cis b| + i \Arg (e^a \cis b) = a + i \Arg(\cis b) = a + bi + 2\pi n i$ for some $n$:
+    \item $\Arg z \in (-\pi,\pi]$, so adjust $\Arg(\cis b)$ with n:
+        \[-\pi < 2\pi n + b \leq \pi\]
+        \[-\pi - b < 2\pi n \leq \pi - b\]
+        \[\frac{-\pi - b}{2\pi} < n \leq \frac{\pi - b}{2\pi}\]
+        Because the bounds differ by one, $n = \floor{\frac{1}{2} - \frac{b}{2\pi}}$, so $\Log$ is a perfect inverse when $\Im z \in (-\pi,\pi]$
+\end{itemize}
+
+\subsection{Oct 23: Properties of the Logarithm}
+\begin{itemize}
+    \item The domain of the real logarithm is $\R^+$:\\
+        Let $r > 0$, and $n \in \N$\\
+        $e^n > 2^n > n \rightarrow \infty$, then $e^{n_1} > r$ for any r, as long as $n_1$ is sufficiently large\\
+        $\frac{1}{e^n} \rightarrow 0$, then $e^{-n_2} < r$ for any r, as long as $n_2$ is sufficiently large\\
+        $e^x$ is continuous, so by the IVT, $(\forall r > 0) (\exists n_r : e^{n_r} = r)$\\
+        The range of $e^x$ is then a subset of, a superset of, and exactly, $\R^+$
+    \item Define $x^r$ for real $r$ as $e^{r\ln x}$, which satisfies the properties that exponentials should:
+        \[x^{r + s} = e^{(r + s) \ln x} = e^{r \ln x} e^{s \ln x} = x^r x^s\]
+        \[(x^r)^s = e^{s \ln x^r} = e^{sr \ln x} = e^{\ln x ^{sr}} = x^{sr}\]
+    \item $\log_x r$ as a function of $r$ can be defined as the inverse of $e^{r \ln x} = x^r$:
+        \[k = \frac{\ln e^{k \ln x}}{\ln x}\]
+        \[\log_x k = \frac{\ln k}{\ln x}\]
+\end{itemize}
+
+\subsection{Oct 24: Branching of Log}
+\begin{itemize}
+    \item The complex logarithm retains some nice properties:
+        \[w,z \neq 0 \Rightarrow \Log(zw) \equiv (\Log z + \Log w) (\mod 2\pi i)\]
+        \[\Log z + \Log w = \ln|z| + \ln |w| + i(\Arg z + \Arg w)\]
+        \[\Log(zw) = \ln|zw| + i \Arg zw = \ln(|z||w|) + i \Arg zw = \ln |z| + \ln |w| + i \Arg zw\]
+        \[|zw|\cis(\Arg z + \Arg w)= |z|\cis(\Arg z)|w|(\cis(\Arg w))= zw = |zw|\cis(\Arg zw)\]
+        \[\cis(\Arg z + \Arg w) = \cis(\Arg zw) \Rightarrow (\Arg z + \Arg w) \equiv \Arg zw (\mod 2\pi)\]
+        In fact, the relationship can be further clarified:
+        \[(\Arg z + \Arg w) \in (-2\pi,2\pi] \rightarrow \Arg zw + 2n\pi\in (-2\pi,2\pi] \Rightarrow n \in \{-1, 0, 1\}\]
+\end{itemize}
+
+\subsection{Oct 25: Halved; Missed Thread}
+\begin{itemize}
+    \item $\cis(x) = \cis(y) \Rightarrow x \equiv y (\mod 2\pi)$
+        \[\cis(x) = \cis(y) = \cis(x+d) = \cis(x)\cis(d)\]
+        \[1 = \cis(d) \text{ which is true iff $d \equiv 0 (\mod 2\pi)$}\]
+\end{itemize}
+
+\subsection{Oct 28: $z^w$}
+\begin{itemize}
+    \item Motivated by the definition of $x^r$, $z^w = e^{w \Log z}$, multivalued as $e^{w \Log z + 2\pi\Z}$
+    \item Let $w = c + di, z^w = e^{(c + di)(\ln |z| + i \Arg z)}$
+        \[= e^{c \ln |z| - d \Arg z + i(d \ln|z| + c \Arg z)}\]
+        \[= \frac{|z|^c}{e^{d \Arg z}} e^{i(c \Arg z + d \ln |z|)}\]
+        \[= \frac{|z|^c}{e^{d \Arg z}} \cis(c \Arg z) \cis(d \ln z)\]
+        \[= \frac{|z|^c}{e^{d \Arg z}} \frac{z^c}{|z|^c} \cis(d \ln |z|)\]
+        \[= \frac{z^c \cis(d \ln |z|)}{e^{d \Arg z}}\]
+    \item By analyzing where $\Arg$ appears, the multivalued exponential is $z^w e^{-2d\pi}\cis(2\pi c n)$ where $n \in \Z$; the set is finite for $w \in \Q$ and one element if $w \in \Z$
+\end{itemize}
+
+\subsection{Oct 29: Complex Trigonometry}
+\begin{itemize}
+    \item Circular and hyperbolic trigonometric functions for complex numbers are linked:
+        \[\cos(z) = \frac{\cis(z) + \cis(-z)}{2} = \frac{e^{iz} + e^{-iz}}{2}\]
+        \[\sin(z) = \frac{\cis(z) - \cis(-z)}{2i} = \frac{e^{iz} - e^{-iz}}{2i}\]
+        \[\cos(a + bi) = \cos(x) \cosh(y) - i\sin(x)\sinh(y)\]
+        \[\sin(a + bi) = \sin(x) \cosh(y) + i\cos(x)\sinh(y)\]
+\end{itemize}
+
+\subsection{Oct 30: Chish and Hyperbolizing}
+\begin{itemize}
+    \item Call the vector $(\cosh t, \sinh t)$ $\rm{chish } t$
+    \item The Minkowskian angle of $\rm{chish } t$ retains the property that $2A = t$, where $A$ is the area between $x = 0$, the curve, and the segment from $(0,0)$ to $(\cosh t, \sinh t) = (a,b)$
+        \[a + b = e^t\]
+        \[\ln(a + b) = t\]
+        Thus, the required identity is:
+        \[A = \bigg| \frac{\ln(a+b)}{2} \bigg|\]
+        \[A = \int^1_0 \frac{bx}{a} dx + \int^a_1 \Big( \frac{bx}{a} - \sqrt{x^2 - 1} \Big) dx = \frac{ba}{2} - \int^a_1 \sqrt{x^2 - 1}\]
+\end{itemize}
+
+\subsection{Oct 31: Hyper Hyper Hyper and Breaking ran sin}
+\begin{itemize}
+    \item Basic hyperbolic trigonometric identities:
+        \[\cosh(a+b) = \cosh a \cosh b + \sinh a \sinh b\]
+        \[\sinh(a+b) = \sinh a \cosh b + \cosh a \sinh b\]
+        \[\cosh t = \cosh (-t) \quad \sinh t = - \sinh (-t)\]
+        \[\cosh 0 = 1 \quad \sinh 0 = 0\]
+    \item $\sin z = 2$; what is z?
+        \[2 = \frac{e^{iz} - e^{-iz}}{2i}\]
+        \[0 = e^{2iz} - 4ie^{iz} - 1\]
+        \[e^{iz} = \frac{4i \pm \sqrt{-12}}{2} = (2 \pm \sqrt{3})i\]
+        \[e^{-\Im z + i\Re z} = e^{-\Im z} \cis(\Re z) = (2 \pm \sqrt{3})i\]
+        \[\Re z = \frac{\pi}{2} + 2\pi n, n \in \Z\]
+        \[\Im z = -\ln \big( 2 \pm \sqrt{3} \big)\]
+    \item Circular trigonometric identities are also true for complex functions:
+        \[\sin^2 z + \cos^2 z = 1\]
+        \[\cos z = \cos(-z)\]
+        \[\sin z = -\sin(-z)\]
+        \[\cos(z+w) = \cos z \cos w - \sin z \sin w\]
+        \[\sin(z+w) = \sin z \cos w + \cos z \sin w\]
+        \[\cos z = \cos(z + 2\pi) \quad \sin z = \sin(z +  2\pi)\]
+    \item A surprising theorem; Identities of the form $f(x) = 0$ for $x \in (a,b) \subseteq \R$ and holomorphic $f$ are valid for $x \in \C$
+\end{itemize}
+
+\subsection{Nov 1: Complex Inverse Trigonometric Functions}
+\begin{itemize}
+    \item Linear transformations of $\C, z \mapsto az + b$ or $a\bar{z} + b$ are a subset of M\"obius transformations $z \mapsto \frac{az + b}{cz + d}$, which arbitrary circles are closed under.
+    \item Rational transformations, $z \mapsto \frac{f_1(z)}{f_2(z)}$ for analytic $f$ are a subset of the meromorphic transformations, and they are also holomorphic when $f_2(z) \neq 0$
+    \item $\arccos w, \arcsin w, \arctan w$ can all be found by the same method as before:
+        \[\cos z = w = \frac{e^{iz} + e^{-iz}}{2}\]
+        \[0 = e^{2iz} - 2we^{iz} + 1\]
+        \[e^{iz} = w \pm \sqrt{w^2 - 1}\]
+        \[z = -i\log \big( w \pm \sqrt{w^2 - 1} \big)\]
+        WLOG, choose the minus sign, since $z$ can be negated without affecting $\cos z$ and the negative can be passed into $\log$ to take the reciprocal of the argument, namely the same as choosing the plus sign
+        \[\arccos w = i\log \big( w + \sqrt{w^2 - 1} \big) = i\Log \big( w + \sqrt{w^2 - 1} \big) + 2\pi n, n\in \Z\]
+        \[\Arccos w = i\Log \big( w + \sqrt{w^2 - 1} \big)\]
+        \[\cos(\Arccos w) = w \quad \Arccos(\cos z) = z \text{ if } \Re z \in [-\pi,\pi)\]
+        \\
+        \[\sin z = w = \frac{e^{iz} - e^{-iz}}{2i}\]
+        \[0 = e^{2iz} - 2iwe^{iz} - 1\]
+        \[e^{iz} = iw \pm \sqrt{1 - w^2}\]
+        \[z = -i\log \big(iw \pm \sqrt{1 - w^2})\]
+        Again, take only one sign, since the two possibilities are reciprocals\\
+        Negating $z$ will negate $\sin z = w$, but $\arcsin w$ will negate the negation
+        \[\arcsin w = i\log \big(iw + \sqrt{1 - w^2} \big) = i\Log \big( iw + \sqrt{1- w^2} \big) + 2\pi n, n\in \Z\]
+        \[\Arcsin w = i\Log \big(iw + \sqrt{1 - w^2} \big)\]
+        \[\sin(\Arcsin w) = w \quad \Arcsin(\sin z) = z \text{ if } \Re z \in [-\pi,\pi)\]
+        \\
+        \[\tan z = w = -i \frac{e^{iz} - e^{-iz}}{e^{iz} + e^{-iz}}\]
+        \[e^{2iz} = \frac{i - w}{i + w}\]
+        \[z = \frac{-i \log \bigg( \displaystyle \frac{i-w}{i+w} \bigg)}{2} = \frac{i}{2} \log\bigg( \frac{i-w}{i+w}\bigg)\]
+        \[\Arctan w = \frac{i}{2} \Log\bigg( \frac{i-w}{i+w}\bigg)\]
+\end{itemize}
+
+\subsection{Nov 5: $\frac{d}{dz}f(z)$}
+\begin{itemize}
+    \item Limits of sequences to infinity are known, but arbitrary complex limits have yet to be defined; the method is very familiar:
+        \[(\forall \ep > 0)(\exists \de > 0)(|z - a| < \de \land z \in D \Rightarrow |f(z) - b| < \ep)\]
+        $a \in \bar{D}$, and $z$ must approach $a$ by every path, and this limit must not depend on that path\\
+        Limit laws hold for complex functions, since the triangle inequality holds on all metric spaces, including $\C$
+    \item Continuity of $f$ at $z$:
+        \[\lim_{z \rightarrow a} f(z) = f(a)\]
+        $a \in D$
+    \item Differentiability of $f$ at $z$:
+        \[f'(z), \text{ if it exists, } = \ltz{h} \frac{f(z+h) - f(z)}{h}\]
+        $z \in \text{int } S$, since $f(z + h)$ must be defined for any path $h$ approaches $0$ from\\
+        This condition is much stronger than the equivalent statement in the reals; a complex function differentiable once must be smooth
+    \item Differentiability implies continuity, just like in the reals,
+        \[\ltz{h} \frac{f(z+h) - f(z)}{h}h = \ltz{h} \frac{f(z+h)-f(z)}{h} \ltz{h}h\]
+        If $f'(z)$ exists, then this limit is $0$
+        \[\ltz{h} \frac{f(z+h) - f(z)}{h}h = 0 =\ltz{h} (f(z+h) - f(z))\]
+\end{itemize}
+
+\subsection{Nov 6: Function Domain Classes}
+\begin{itemize}
+    \item There are a few special classes:
+    \item $f : \C \rightarrow \R$ is especially boring in terms of calculus; only the constant functions are differentiable:
+        \[\ltz{h} \frac{f(z+h) - f(z)}{h} \in \ltz{h} \frac{\R}{h}\]
+        The above is either purely real or purely imaginary depending on the state of $h$\\
+        Since any path of $h$ to $0$ must result in the same limit, the only complex number that is both purely real and purely imaginary is $0 = f'(z)$
+    \item The same $h$ paradigm can be used in many different applications
+    \item $f : \R \rightarrow \C$ is just like a vector-valued function of a real variable, and it mostly acts like them too
+    \item $f : \C \rightarrow \C$ has differentiability governed by the Cauchy Riemann Equations:
+        \[f(z) = f(x + yi) = u(x,y) + i v(x,y)\]
+        \[\ltz{h} \frac{f(z+h) - f(z)}{h} = \ltz{a + bi} \frac{u(a + x, b + y) - u(x,y) + iv(a + x, b + y) - iv(x,y)}{a + bi}\]
+        \[= \ltz{a+bi} \frac{u(a + x, b + y) - u(x,y)}{a + bi} + i \ltz{a+bi} \frac{v(a + x, b + y) - v(x,y)}{a + bi}\]
+        Let $h$ be purely real:
+        \[\frac{\del}{\del x} u(x,y) + i \frac{\del}{\del x} v(x,y)\]
+        Let $h$ be purely imaginary:
+        \[-i\frac{\del}{\del y} u(x,y) +  \frac{\del}{\del y} v(x,y)\]
+        The two representations of the derivative must be equal:
+        \[\frac{\del}{\del x} u(x,y) + i \frac{\del}{\del x} v(x,y) = -i\frac{\del}{\del y} u(x,y) +  \frac{\del}{\del y} v(x,y)\]
+        The partial derivatives can be made to be of real functions $u$ and $v$; setting real and imaginary parts equal, the Cauchy Riemann Equations arise
+        \[\frac{\del u}{\del x} = \frac{\del v}{\del y} \quad \quad \frac{\del v}{\del x} = -\frac{\del u}{\del y}\]
+        Alternatively, they can be formulated as:
+        \[f'(z) = \frac{\del f}{\del x} = -i\frac{\del f}{\del y}\]
+        The first equality holds if the derivative exists at all
+\end{itemize}
+
+\subsection{Nov 7: Complex Vector Paths}
+\begin{itemize}
+    \item The derivative of $\gamma : \R \rightarrow \C$ represents the instantaneous velocity of the point along the path. Assume $\gamma'(t) \neq 0$:
+        \[\gamma'(t) = \lim_{dt \rightarrow 0^+} \frac{\gamma(t+dt) - \gamma(t)}{dt} = \lim_{dt \rightarrow 0^+} \frac{\Delta 
+        \gamma}{|\Delta \gamma|} \lim_{dt \rightarrow 0^+} \frac{|\Delta \gamma|}{dt}\]
+        For appropriate definition of $\delta \gamma$
+        \[\gamma(t + dt) = \gamma(t) + \gamma'(t)dt + o(dt)\]
+        Therefore, $|\delta \gamma| \neq 0$ when the tail terms are small in comparison to $\gamma'(t)dt$, so the multiplication is valid
+        \[\frac{\Delta \gamma}{|\Delta \gamma|} = \cis(\Arg(t))\]
+        This has a limit because its modulus is always 1, and its direction approaches that of the tangent; Because this has a limit, the other factor, equal to $|\gamma'(t)|$ must have one too
+        \[\gamma'(t) = \cis(\Arg \Delta \gamma) |\gamma'(t)|\]
+        This vector gives both the instantaneous direction and speed of a point on the curve
+\end{itemize}
+
+\subsection{Nov 8: More Limiting}
+\begin{itemize}
+    \item Given $z(r) \rightarrow z(r_0)$ and $z(r) = w(r) + x(r)$, if $x(r)$ and $w(r)$ are linearly independent, both have a limit as $r \rightarrow r_0$
+\end{itemize}
+
+\subsection{Nov 12: Utilization of CR}
+\begin{itemize}
+    \item $f(z) = z^2$, then $f'(z) = 2z$ everywhere from calculus, so CR must be true
+        \[\frac{\del f}{\del x} = 2x + 2iy = 2z\]
+        \[-i\frac{\del f}{\del y} = -i(-2y + 2ix) = 2z\]
+    \item The partial converse of CR: If CR is true and the partial derivatives are continuous at $z$, then $f'(z)$ exists\\
+        \[f(z + h) - f(z) = u(x + \alpha, y + \beta) + iv(x + \alpha, y + \beta) - u(x,y) - iv(x,y)\]
+        \[= (u(x + \alpha, y + \beta) - u(x + \alpha, y) + u(x+\alpha, y) - u(x,y)) + i(v(x + \alpha, y + \beta) - v(x + \alpha, y) + v(x+\alpha, y) - v(x,y))\]
+        By the MVT, each partial difference can be taken as a partial derivative
+        \[= \frac{\del u}{\del y}(x+\alpha, y + \theta\beta)\beta + \frac{\del u}{\del x}(x,y)\alpha + i \bigg( \frac{\del v}{\del y}(x + \alpha, y + \theta\beta)\beta + \frac{\del v}{\del x}(x,y)\alpha \bigg)\]
+        \[= \beta \frac{\del u}{\del y} + \beta \ep_1(\alpha, \beta) + \alpha \frac{\del u}{\del x} + \alpha \ep_2(\alpha,\beta) + i \bigg(\beta \frac{\del v}{\del y} + \beta \ep_3(\alpha, \beta) + \alpha \frac{\del v}{\del x} + \alpha \ep_4(\alpha, \beta) \bigg)\]
+        The error terms $\ep$ approach zero because of the partal derivatives are continuous at $z$.
+        \[\frac{f(z+h) - f(z)}{h} = \frac{\beta}{h} \frac{\del u}{\del y} + \frac{\beta}{h} \ep_1 + \frac{\alpha}{h} \frac{\del u}{\del x} + \frac{\alpha}{h} \ep_2 + i \bigg( \frac{\beta}{h} \frac{\del v}{\del y} + \frac{\beta}{h} \ep_3 + \frac{\alpha}{h} \frac{\del v}{\del x} + \frac{\alpha}{h} \ep_4 \bigg)\]
+        
+        \[= \frac{\alpha}{h} \bigg( \frac{\del u}{\del x} + i \frac{\del v}{\del x} \bigg) + \frac{\beta}{h} \bigg( \frac{\del u}{\del y} + i \frac{\del v}{\del y} \bigg) + \hat{\ep}_1 + \hat{\ep}_2 + \hat{\ep}_3 + \hat{\ep}_4\]
+        The $\hat{\ep}$ terms are in the form $\frac{\alpha/\beta}{h} \ep_n$, which, wen $h \rightarrow 0$, is the product of a bounded quantity and one that approaches zero, so it approaches zero as a whole\\
+        \[= \frac{\alpha}{h} \frac{\del f}{\del x} + \frac{\beta i}{h} \frac{\del f}{\del y}\]
+        Since CR holds, replace the $\frac{\del f}{\del y}$ with $i\frac{\del f}{\del x}$
+        \[=\frac{\alpha + \beta i}{h} \frac{\del f}{\del x} = \frac{\del f}{\del x}\]
+        This equality holds when $h \rightarrow 0$, so the left side becomes $f'(z)$
+\end{itemize}
+
+\subsection{Nov 13: Differentiability Test}
+\begin{itemize}
+    \item The differentiability test based on CR was almost proved.
+    \item Liouville's Theorem: Every entire function on $\C$ is either constant or unbounded.
+    \item The FTA is now easy: Take an arbitrary polynomial $p(z)$ that has no roots. Then $\frac{1}{p(z)}$ is entire. Polynomials with no roots have a lower bounded modulus above $0$:
+        \[|p(z)| = |a_n z^n - q(z)| \geq ||a_n z^n|-|q(z)|| \geq |a_n z^n|-|q(z)| = |a_n||z|^n - |q(z)|\]
+        \[|q(z)| \leq \sum_{j=0}^{n-1}|a_j z^j| \overset{|z| \geq 1}{\leq} |z|^{n-1} \sum_{j=0}^{n-1} |a_j| = |z|^{n-1} A\]
+        \[|p(z)| \geq |a_n||z|^n - |z|^{n-1}A = |z|^{n-1}(|a_n||z| - A) \geq |a_n||z| - A\]
+    so with sufficiently large $r = |z|$, $|\frac{1}{p(z)}|$ can be forced under $\frac{1}{|a_n||z| - A}$. Inside compact $\bar{B}_r$, $\frac{1}{p(z)}$ must be bounded by EVT. Therefore, $\frac{1}{p(z)}$ is a bounded entire function, so $p(z)$ with no roots must be the reciprocal of a constant.
+\end{itemize}
+
+\subsection{Nov 14: The Same}
+\begin{itemize}
+    \item The differentiability test was completed!
+\end{itemize}
+
+\subsection{Nov 15*: Differentiability Rules}
+\begin{itemize}
+    \item Sum and Scaling Rules:
+        \[(af + bg)'(z) = \ltz{h} \frac{(af+bg)(z+h) - (af+bg)(z)}{h} = \lti{h} \frac{(af)(z+h)+(bg)(z+h)-(af)(z)-(bg)(z)}{h}\] 
+        \[= \lti{h} \frac{af(z+h) + bg(z+h) - af(z) - bg(z)}{h} = af'(z) + bg'(z)\]
+    \item Power Rule: $f(z) = z^n, n \in \N$
+        \[\lti{h} \frac{f(z+h) - f(z)}{h} = \lti{h} \frac{(z+h)^n - z^n}{h} = \lti{h} \frac{nhz^{n-1} + O(h^2)}{h} = \lti{h} \big( nz^{n-1} + O(h) \big) = nz^{n-1}\]
+        The binomial theorem will hold on any field
+\end{itemize}
+
+\subsection{Nov 18: More Differentiability Rules}
+\begin{itemize}
+    \item Product Limit Law, using the wonderful identity $ab - cd = (a-c)b + c(b-d)$:\\
+    Let $z \rightarrow a$ and $w \rightarrow b$
+        \[0 \leq |zw - ab| = |(z-a)w + a(w - b)| \leq |z-a||w'| + |a||w-b| \rightarrow |0||b| + |a||0| = 0\]
+    \item This leads to the Product Derivative Rule: $f'(z) = a$ and $g'(z) = b$
+        \[\frac{(fg)(z+h) - (fg)(z)}{h} = \frac{f(z+h)g(z+h) - f(z)g(z)}{h} = \frac{(f(z+h) - f(z))g(z+h) - f(z)(g(z+h) - g(z))}{h}\]
+        \[= g(z+h)\frac{f(z+h) - f(z)}{h} + f(z)\frac{g(z+h) - g(z)}{h}\]
+        Take limits on both sides to obtain:
+        \[(fg)'(z) = g(z)f'(z) + f(z)g'(z)\]
+\end{itemize}
+
+\subsection{Nov 19: Even More Differentiability Rules}
+\begin{itemize}
+    \item Chain Rule, $(g \circ f)'(z) = (g' \circ f)(z)f'(z), f(z),g(z) \in \C$:\\
+        This proof is essentially ported over from the multivariate real chain rule wholesale. Define differentiability of $(g \circ f)$ as:
+            \[(\exists ab)(\forall \ep > 0)(\exists \de > 0)(\forall h)(|h| < \de \Rightarrow 
+            (g \circ f)(z+h) - (g \circ f)(z) - abh < \ep|h|) \]
+            Let $k = f(z+h) - f(z)$, and recall the continuity of $f$ at $z$ and $g$ at $f(z)$
+            \[|g(f(z+h)) - g(f(z)) - bk + bk - abh| < |\ep|k|| + |b(k - ah)| < |\ep|k - ah + ah||+|b||\ep|h||\]
+            \[< |\ep(\ep|h| + |a||h|)| + \ep |b||h| = \ep^2|h| + \ep|a||h| + \ep|b||h| = (\ep^2 + \ep|a| + \ep|b|)|h|\]
+            The right side is arbitrarily small even when divided by $|h|$, so the proof is complete\\
+            When $|h| < \de$, $|\frac{(g \circ f)(z+h) - (g \circ f)(z) - abh}{h}| < \ep$, so $\frac{(g \circ f)(z+h) - (g \circ f)(z)}{h} \rightarrow ab$, the derivative 
+\end{itemize}
+
+\subsection{Nov 20: Chained}
+\begin{itemize}
+    \item The derivation of the chain rule for $\C \rightarrow \C \rightarrow \C$ was completed
+    \item The chain rule for $\R \rightarrow \C \rightarrow \C$ is basically the same, just let $f : \R \rightarrow \C$
+\end{itemize}
+
+\subsection{Nov 21: Even Even More Differentiability Rules}
+\begin{itemize}
+    \item Reciprocals, $(\frac{1}{f})' = -\frac{f'}{f^2}$:
+        \[\frac{\frac{1}{f(z+h)} - \frac{1}{f(z)}}{h} = \frac{f(z) - f(z+h)}{hf(z)f(z+h)} = -\frac{f(z+h) - f(z)}{h} \frac{1}{f(z)f(z+h)} \rightarrow -f'(z) \frac{1}{f(z)^2}\]
+    \item Quotient Rule, $(\frac{f}{g})' = \frac{gf' - fg'}{g^2}$
+        \[\frac{d}{dz} \frac{f(z)}{g(z)} = \frac{d}{dz} f(z) \frac{1}{g(z)} = \frac{f'(z)}{g(z)}- \frac{f(z)g'(z)}{g(z)^2} = \frac{g(z)f'(z) - f(z)g'(z)}{g(z)^2}\]
+    \item Power Rule, $n \in \Z$, so just consider negative $n$
+        \[\frac{d}{dz} z^n = \frac{d}{dz} \frac{1}{z^{|n|}} = \frac{-(z^{|n|})'}{z^{2|n|}} = \frac{-|n| z^{|n| - 1}}{z^{2|n|}} = \frac{-|n|}{z^{|n| + 1}} = nz^{n-1}\]
+    \item What $f$ have $f'(z) = 0$ everywhere in its domain? Any of $\Re f(z), \Im f(z), |f(z)|, \Arg f(z)$ constant implies each other and that the function is constant on each connected subset of the domain, so $f'(z) = 0$
+\end{itemize}
+
+\subsection{Nov 22: MVT and Friends}
+\begin{itemize}
+    \item $f : C \in \R \rightarrow \R$, and $C$ is connected. If $f'(x) = 0$,  then $f(x) = c$\\
+        This is easy to prove with the MVT; assume that $f'(x) = 0$ but $f(p) \neq f(q), p \neq q$\\
+        Then the MVT implies $\exists c : f'(c) = \frac{f(p) - f(q)}{p-q} \neq 0$
+    \item The complex case is harder. Let $U$ be a region; nonempty, connected and open. Any region will be zigzag connected, so a path between any two points can trace a finite union of orthogonal line segments. This is not true for non-open connected sets, which may contain a diagonal line segment, or just a curve.
+    \item $f'(z) = 0 = \frac{\del f}{\del x} (z) = \frac{\del u}{\del x} + i\frac{\del v}{\del x} = \frac{\del v}{\del y} - i\frac{\del u}{\del y}$
+    \item All four partial derivatives are $0$, so $z$ moving along a zigzag path does not change $f(z)$. Since any region is zigzag connected, there is no difference in $f(z)$ for any two $z$ in it.
+\end{itemize}
+
+\subsection{Nov 25: Constant Constancy}
+\begin{itemize}
+    \item $f$ is analytic on region $U$ if $f$ is differentiable on $U$. $f$ analytic on an arbitrary set $S$ simply implies that $f$ is analytic on some $U \supseteq S$
+    \item $f$ analytic on $U \land \Re f(z) = c \Rightarrow f(z) = C$:
+        \[\frac{\del u}{\del x} = \frac{\del u}{\del y} = 0 = -\frac{\del v}{\del x} = \frac{\del v}{\del y}\]
+        The same conclusion as above is reached with $\Im f(z) = c$
+    \item $f$ analytic on $U \land |f(z)| = c \Rightarrow f(z) = C$
+        \[|f(z)| = u^2 + v^2\]
+        Either $|f(z)| = 0 \Rightarrow f(z) = 0$, or $|f(z)| > 0$
+        \[u^2 + v^2 = k\]
+        \[u\frac{\del u}{\del x} + v\frac{\del v}{\del x} = 0 = u\frac{\del v}{\del y} - v\frac{\del u}{\del y}\]
+        \[u\frac{\del u}{\del y} + v\frac{\del v}{\del y} = 0\]
+        The system of equations in $\frac{\del u}{\del y}$ and $\frac{\del v}{\del y}$ is homogeneous and has linearly independent columns: $\det = -u^2 - v^2 \neq 0$. Then its only solution is $(0,0)$, and the same proof follows from there.
+    \item $f$ analytic on $U \land \Arg f(z) = c \Rightarrow f(z) = C$
+        \[\text{Let } w = \frac{f(z)}{|f(z)|}, \text{ a constant}\]
+        \[g(z) := \frac{f(z)}{w} \in \R\]
+        $g(z)$ is differentiable, and since it is a real-valued function of a complex variable, it must be constant, so $f(z)$ is too
+\end{itemize}
+
+\subsection{Nov 26: Rigorously Zagged}
+\begin{itemize}
+    \item Any region is zigzag connected, by continuous induction
+    \item Since $U$ is connected, $\exists \gamma : [0,1] \rightarrow U$ continuously with the necessary start and end points
+    \item $T := \{t \in [0,1]\,|\,\exists \text{ zigzag from } p \text{ to }  q_t = \gamma(t)\}$\\
+    T is nonempty ($0 \in T$) and upper-bounded ($1 \geq T$), so $\exists t_0 = \sup T \in [0,1]$\\
+    If $T$ was less than 0, then it wouldn't upper bound $0$, and if it was higher than $1$, then that would be a lower upper bound
+    \item $t_0 \in T$, because the supremum of a set can be approached arbitrarily closely, and $\gamma$ is continuous
+    \item Then, $B_r(\gamma(t_0)) \in U$ by openness, and $\gamma(t_n) \in B_r(\gamma(t_0))$ eventually\\
+    All $t_n \in T$, so then $\gamma(t_n)$ is zigzag reachable, and traversing the disk is not hard, then $\gamma(t_0)$ is reachable too
+    \item Now, if $t_0 < 1$, then there's always another $t_n > t_0$ reachable by zigzag, since a disk is always zigzag connected, so $t_0 = 1$ and $q_1$ is zigzag reachable
+\end{itemize}
+
+\subsection{Nov 27*: $\frac{d}{dz} \Log z$}
+\begin{itemize}
+    \item $\Log z$ is differentiable on $\C \backslash (\R^- \cup \{0\})$
+    \item $\Log z = \frac{1}{2}\ln(x^2 + y^2) + (\sgn y)\arccos\Big(\frac{x}{\sqrt{x^2 + y^2}}\Big)i$
+    \item Consider the $z \notin \R^+$ case first, where $(\sgn y)$ will be constant in a neighborhood
+        \[\frac{\del u}{\del x} = \frac{x}{x^2+y^2} \quad \quad \frac{\del u}{\del y} = \frac{y}{x^2+y^2}\]
+        \[\frac{\del v}{\del x} = (\sgn y)\frac{-\sqrt{x^2+y^2} + \frac{2x^2}{2\sqrt{x^2+y^2}}}{\sqrt{1-\frac{x^2}{x^2+y^2}} \cdot (x^2 + y^2)} = (\sgn y)\frac{-x^2-y^2+x^2}{|y|(x^2+y^2)} = \frac{-y}{x^2+y^2}\]
+        \[\frac{\del v}{\del y} = (\sgn y)\frac{x\frac{2y}{2\sqrt{x^2+y^2}}}{\sqrt{1 - \frac{x^2}{x^2+y^2}} \cdot (x^2 + y^2)} = (\sgn y)\frac{xy}{|y|(x^2+y^2)} = \frac{x}{x^2+y^2}\]
+        So long as $z \notin \R$, the partial derivatives are continuous and CR is satisfied; $f'(z) = \frac{\del f}{\del x} = \frac{x - iy}{x^2 + y^2} = \frac{1}{x+iy} = \frac{1}{z}$
+    \item The $z \in \R^+$ case is a little more nuanced:
+        \[\frac{\del u(a,0)}{\del x} = \ltz_{h} \frac{u(a+h,0) - u(a,0)}{h} = \ltz{h} \frac{\ln(a+h) - \ln(a)}{h} = \frac{1}{a}\]
+        \[\frac{\del u(a,0)}{\del y} = \ltz_{\beta} \frac{u(a,\beta) - u(a,0)}{\beta} = \ltz_{\beta} \frac{ln(a^2 + \beta^2) - \ln(a^2)}{2\beta} = \ltz_{\beta} \frac{\frac{2\beta}{a^2 + \beta^2} - 0}{2} = \ltz{\beta}  \frac{\beta}{a^2 + \beta^2} = 0\]
+        \[\frac{\del v(a,0)}{\del x} = \ltz{h} \frac{v(a+h,0) - v(a,0)}{h} = \ltz{h} \frac{(\sgn 0)\hdots - (\sgn 0)\hdots}{h} = 0\]
+        \[\frac{\del v(a,0)}{\del y} = \ltz{\beta} \frac{v(a,\beta) - v(a,0)}{\beta} = \ltz{\beta} \frac{(\sgn \beta) \arccos\Big(\frac{a}{\sqrt{a^2+\beta^2}}\Big)}{\beta}\]
+        \[\lim_{\beta \rightarrow 0^-} \frac{-\arccos\Big(\frac{a}{\sqrt{a^2+\beta^2}}\Big)}{\beta} = \lim_{\beta \rightarrow 0^-} \frac{\frac{1}{\sqrt{1-\frac{a^2}{a^2+\beta^2}}} \cdot \frac{-a\frac{2\beta}{2\sqrt{a^2+\beta^2}}}{a^2+\beta^2}}{1} = \lim_{\beta \rightarrow 0^-} \frac{\sqrt{a^2+\beta^2}}{|\beta|} \cdot \frac{-\frac{2a\beta}{2\sqrt{a^2+\beta^2}}}{a^2+\beta^2} = \lim_{\beta \rightarrow 0^-} \frac{a}{a^2 + \beta^2} = \frac{1}{a}\]
+        \[\lim_{\beta \rightarrow 0^+} \frac{-\arccos\Big(\frac{a}{\sqrt{a^2+\beta^2}}\Big)}{\beta} \text{ is the same with double negation}\]
+        Then the partial derivatives are continuous and CR is satisfied, and obviously $f'(z) = \frac{\del f}{\del x} = \frac{1}{a} = \frac{1}{z}$
+\end{itemize}
+
+\subsection{Dec 2: The Same}
+\begin{itemize}
+    \item The different cases for the derivative of $\Log z$ were completed
+\end{itemize}
+
+\subsection{Dec 3: Pathfinding}
+\begin{itemize}
+    \item A path is a continuous $\gamma : [a,b] \rightarrow \C$, and such a path may be restricted to a certain region $U$. The interval must have positive length
+    \item A smooth path is differentiable on every point, including the endpoints, so the path itself can only be a restriction of a wider function. The derivative can never be 0 in the open interval
+    \item A piecewise smooth path is the concatenation of finitely many smooth paths
+    \item Concatenation:
+        \[\gamma_1 : [a,b] \rightarrow \C \quad \gamma_2 : [c,d] \rightarrow \C \quad \gamma_1(b) = \gamma_2(c)\]
+        \[\gamma_1 \cat \gamma_2 : [a,d+b-c] \rightarrow \C\]
+        \[\gamma_1 \cat \gamma_2 := \begin{cases}
+            \gamma_1(t), t \in [a,b]\\
+            \gamma_2(t+c-b), t \in (b,d+b-c]
+        \end{cases}\]
+    \item Concatenation is associative: $\gamma_1 \cat(\gamma_2 \cat \gamma_3)$ and $(\gamma_1 \cat \gamma_2) \cat \gamma_3$, are each equal to $\gamma_1, \gamma_2, \gamma_3$ on each of the separate domains, then they are clearly equal
+    \item The set of piecewise smooth paths is closed under concatenation, since piecewise smooth paths are concatenations themselves
+    \item Reversal is straightforward: $\gamma^- : [-b, -a] \rightarrow \C$, $\gamma^- (t) := \gamma(-t)$
+\end{itemize}
+
+\subsection{Dec 4: Derivative, Geometrically}
+\begin{itemize}
+    \item The derivative geometrically symbolizes the same thing as it does in real calculus, a scale factor for local changes in input to local changes in output. Whereas in the real line this scaling is a simple dilation, in the complex plane, a multiplication represents a stretch rotation\\
+        $|f'(z)|$ is the local dilation factor of the plane, and $\Arg f'(z)$ is the angle of rotation
+    \item Angles can be defined between smooth paths where they intersect by using the tangent vectors of each path at the intersection - this tangent must exist
+    \item As for angles by themselves, the angle from $a$ to $b$ in the plane with respect to the origin can be written as $\angle ^\pm _0 (a,b)$ for the signed variant, and $\angle _0 (a,b)$ for the absolute.
+        \[\angle ^\pm _0 (a,b) = \Arg(\bar{a}b)\]
+        This definition is motivated from, and intuitively is, the argument of $b$ rotated (and stretched) by $\bar{a}$, so that the angle being measured starts from the real axis
+    \item If a function is differentiable at some point, it must be conformal at that point, so any angle must be exactly preserved
+\end{itemize}
+
+\subsection{Dec 5: Conformality}
+\begin{itemize}
+    \item Let $\gamma, \delta$ be smooth, and $f$ analytic on $z = \gamma(t_0) = \delta(s_0)$
+        \[\angle^\pm_{f(z_0)} (f \circ \gamma, f \circ \delta) = \angle^\pm _0 (f'\circ \gamma \cdot \gamma', f' \circ \delta \cdot \delta')\]
+        \[= \Arg (\overline{f'\circ \gamma} \cdot \overline{\gamma'} \cdot f' \circ \delta \cdot \delta')\]
+        Since $f'$ is continuous near $z$, and differentiable paths $\gamma(t_0) = \delta(s_0)$, $f'\circ \gamma - f' \circ \delta \rightarrow 0$
+        \[= \Arg (|f'\circ \gamma|^2 \cdot \overline{\gamma'} \cdot \delta')\]
+        \[= \Arg(\overline{\gamma'} \cdot \delta') = \angle^\pm_{f(z_0)} (\gamma, \delta)\]
+\end{itemize}
+
+\subsection{Dec 6: $\int_\gamma$}
+\begin{itemize}
+    \item Let $f(z)$ be continuous in $U$, and $\gamma$ be a piecewise smooth path in $U$
+    \item The contour integral $\int_\gamma f(z) dz$ is defined by $\int_a^b f(\gamma(t)) \gamma'(t)$, essentially stretching the path out into a uniform real path and integrating a chain rule
+    \item Integrating a $\R \rightarrow \C$ function is simply done in-place
+    \item An example: 
+        \[\gamma(t) = t^2 + it^3\]
+        \[\int_\gamma z^2 dz = \int_0^1 (t^2 + it^3)^2 (2t + 3it^2) dt = \int_0^1 (2t^5 + 3it^6 + 4it^6 -6t^7 -2t^7 -3it^8) dt = \frac{1}{3} + \frac{3i}{7} + \frac{4i}{7} - 1 - \frac{i}{3} = \frac{-2 + 2i}{3}\]
+\end{itemize}
+
+\subsection{Dec 9: Integral Properties I}
+\begin{itemize}
+    \item Contour integrals are linear:
+        \[\int_\gamma (pf(z) + qg(z)) dz\]
+        \[= \int_a^b (pf(\gamma(t))\gamma'(t) + qg(\gamma(t))\gamma'(t)) dz\]
+        \[= \int_a^b pf(\gamma(t)\gamma'(t) dz + \int _a^b qg(\gamma(t))\gamma'(t) dz\]
+        \[= p\int_a^b f(\gamma(t)\gamma'(t) dz + q\int _a^b g(\gamma(t))\gamma'(t) dz\]
+        \[= p\int_\gamma f(z) dz + q\int_\gamma g(z) dz\]
+        Complex integrals obey the same laws as real integrals, provable by splitting up the complex integrand into real and imaginary
+    \item Contour integrals obey the triangle inequality:
+        \[\left|\int_\gamma f(z) dz \right| = \left|\int_a^b f(\gamma(t))\gamma'(t) dz \right|\]
+        \[= \left|\lti_{n} \frac{1}{n} \sum_{k = 1}^{n} f \left (\gamma \left(a + (b-a) \frac{k}{n} \right)\right) \gamma'\left(a + (b-a) \frac{k}{n}\right)\right|\]
+        \[\leq \lti_{n} \sum_{k = 1}^{n} \left| \frac{1}{n} f \left (\gamma \left(a + (b-a) \frac{k}{n} \right)\right) \right| \left| \gamma'\left(a + (b-a) \frac{k}{n}\right)\right|\]
+        \[= \int_\gamma |f(z)| |dz|\]
+        The final integral represents an arclength integral
+    \item The ML Theorem provides a convienient upper bound on the norm of a contour integral:
+        \[\left|\int_\gamma f(z) dz \right| \leq \int_\gamma |f(z)| |dz| \leq \int_\gamma M |dz| = ML\]
+        $M$is the maximum distance from the origin to the map of the path, and $L$ is the length of the path (not the distance of the path!)
+\end{itemize}
+
+\subsection{Dec 10: Integral Properties II}
+\begin{itemize}
+    \item Contour integrals add on path concatenation:
+        \[\int_{\gamma \cat \delta} f(z) dz = \int_a^{b+d-c} f((\gamma \cat \delta)(t)) (\gamma \cat \delta)'(t) dt\]
+        \[ \int_a^b f((\gamma \cat \delta)(t)) (\gamma \cat \delta)'(t) dt + \int_b^{b+d-c} f((\gamma \cat \delta)(t)) (\gamma \cat \delta)'(t) dt \]
+        \[= \int_a^b f(\gamma(t)) \gamma'(t) dt + \int_b^{b+d-c} f(\delta(t)) \delta'(t) dt = \int_\gamma f(z) dz + \int_\delta f(z) dz\]
+    \item Contour integrals are negated on a reverse path:
+        \[\int_{\gamma^-} f(z) dz = \int_{-b}^{-a} f({\gamma^-}(t)) {\gamma^-}'(t) dt = \int_{-b}^{-a} f(\gamma(-t)) \cdot - \gamma'(-t) dt = --- \int_a^b f(\gamma(v)) \gamma'(v) dv  = - \int_\gamma f(z) dz\]
+    \item On the other hand, arclength integrals are not:
+        \[\int_\gamma f(z) |dz| = \int_{-b}^{-a} f({\gamma^-}(t)) |{\gamma^-}'(t)| dt = \int_{-b}^{-a} f(\gamma(-t)) |\gamma'(-t)| dt = --\int_a^b f(\gamma(v)) |\gamma'(v)| dv  = \int_{\gamma^-} f(z) |dz|\]
+    \item Reparamarameterizing the path does not change the integral value
+        \[\int_{\gamma \circ \phi} f(z) dz = \int_c^d f(\gamma(\phi(s))) \gamma'(\phi(s)) \phi'(s) ds = \int_a^b f(\gamma(t)) \gamma'(t) dt  = \int_{\gamma} f(z) dz\]
+\end{itemize}
+
+\subsection{Dec 11: Integral Properties III}
+\begin{itemize}
+    \item FTOC via lemma:
+        \[g(t) = p(t) + iq(t)\]
+        \[\int_a^b g'(t) dt = \int_a^b (p'(t) + iq'(t)) dt = \int_a^b p'(t) dt + i\int_a^b q'(t) dt\]
+        \[= p(t) |_a^b + iq(t) |_a^b = g(t) |_a^b\]
+        Now:
+        \[\int_\gamma f'(z) dz = \int_a^b f'(\gamma(t))\gamma'(t) dt = \int_a^b \left(\frac{d}{dt}f(\gamma(t))\right) dt = f(\gamma(t))|_a^b\]
+    \item Change of variable, or w-substitution:
+        \[\int_\gamma f(g(z))g'(z) dz = \int _a^b f(g(\gamma(t))) g'(\gamma(t)) \gamma'(t) dt\]
+        \[\int_{g \circ \gamma} f(w) dw = \int_a^b f(g(\gamma(t))) (g \circ \gamma)'(t) dt = \int_a^b f(g(\gamma(t))) g'(\gamma(t)) \gamma'(t) dt\]
+        Simply let $g(z) = w$, then w-substitution works just like u-substitution
+    \item As a trial, $\int_\gamma \frac{(\Log z)^2}{z} dz, \gamma(t) = e^{it}, t\in [0,\frac{\pi}{2}]$, so let $w = \Log z$
+        \[= \int_{g \circ \gamma} \frac{w^2}{z} dz \frac{z \, dw}{dz} = \int_{g \circ \gamma} w^2 dw = \frac{w^3}{3} \bigg|_{\Log 1}^{\Log i} = \frac{-i \pi^3}{24}\]
+\end{itemize}
+
+\subsection{Dec 12: Integral Properties Ia}
+\begin{itemize}
+    \item Some integral properties were reviewed
+\end{itemize}
+
+\subsection{Dec 13: Integral Properties IIa}
+\begin{itemize}
+    \item More integral properties were reviewed
+\end{itemize}
+
+\subsection{Dec 16: Integral Properties IIIa}
+\begin{itemize}
+    \item Even more integral properties were reviewed
+    \item Path concatenation can be viewed as a special addition, and loop concatenation multiplication by an integer. Path algebra is sort of defined
+\end{itemize}
+
+\subsection{Dec 17: Integral Properties IVa}
+\begin{itemize}
+    \item Even even more integral properties were reviewed
+\end{itemize}
+
+\subsection{Dec 18: Integral Properties Va}
+\begin{itemize}
+    \item Even even even more integral properties were reviewed
+    \item In reparameterization, $\phi: [c,d] \rightarrow [a,b]$ must be strictly increasing, or the path may have a partial reversal or stop, a forbidden happening. Obviously, it must also be differentiable
+    \item If $\gamma_1(s) = \gamma_2'(\phi(s))\phi'(s)$, then $\gamma_1 \simeq \gamma_2$
+\end{itemize}
+
+\subsection{Dec 19: Path Independence}
+\begin{itemize}
+    \item Even even even even more integral properties were reviewed
+    \item $\simeq$ is an equivalence relation:
+    \begin{itemize}
+        \item Reflexion: $\gamma \simeq \gamma$, if $\phi(s) = s$
+        \item Symmetry: $\gamma \simeq \delta \Leftrightarrow \delta \simeq \gamma$, since $\phi$ and $\phi^{-1}$ will have same sign for derivative and have the same smoothness; this fact is not as easy to prove as it seems
+        \item Transitivity: $\gamma \simeq \delta \land \delta \simeq \zeta \Leftrightarrow \gamma \simeq \zeta$, since $\phi_1 \circ \phi_2$ has the same sign for derivative and is just as smooth; this fact is much easier to prove
+    \end{itemize}
+    \item A continuous $f$ on $U$ is independent of path in $U$ when for any 2 piecewise smooth paths $\gamma_1, \gamma_2$ that start and end on common points,
+        \[\int_{\gamma_1} f(z) dz = \int_{\gamma_2} f(z) dz \Leftrightarrow \exists F(z) : F'(z) = f(z) \text{ on } U\]
+        The reverse implication is directly proved by the FTC, since the integrals of $F'(z)$ will obviously be the same on both paths from and to the same points\\
+        The forward implication is harder:
+\end{itemize}
+
+\subsection{Dec 20: The Same}
+\begin{itemize}
+    \item Try $F(z) = \int_{\gamma_{p,z}} f(w)dw$, with $\gamma$ any zigzag path from $p$ to $z$, and WLOG let its last segment be horizontal, or in the real direction only. Adding $\de$ to $z$ makes the path a bit longer or shorter, resulting in $\gamma_{p,z + \de} = \gamma_{p,z} \, \cat \eta$
+        \[\frac{F(z+\de) - F(z)}{\de} = \frac{\int_\eta f(w)dw}{\de} = \frac{\int_0^1 f(\eta(t)) \eta'(t) dt}{\de} = \frac{\int_0^1 f((1-t)z + t(z + \de)) (z + \de - z) dt}{\de} = \int_0^1 f(z + t\de) dt\]
+        \[\ltz{\de} \frac{F(z+\de) - F(z)}{\de} = \frac{\del F}{\del x} =  \ltz{\de} \int_0^1 f(z + t\de) dt = \int_0^1 \ltz{\de} f(z + t\de) dt = f(z) \cdot 1\]
+        by dominated convergence
+        The same procedure yields $\frac{\del F}{\del y} = if(z)$ when the last segment is vertical, and $\eta'(t) = i\de$. By CR, $F(z)$ is analytic, with derivative $f(z)$
+\end{itemize}
+
+\subsection{Jan 2: Cauchy Goursat Theorem}
+\begin{itemize}
+    \item When $f$ is independent of path on $U$, then $\oint_{\gamma} f(z) dz = 0$ for any piecewise smooth loop $\gamma$, so a path has this property, independence of path, and an antiderivative all at the same time, or not.
+    \item CG provides an additional property that can prove the existence of an antiderivative.
+    \item The simplest form:\\
+        If $f$ is analytic in $U$ containing the axial closed box $R$, then $\oint_{\Gamma(R)} f(z) dz = 0$, where $\Gamma(R)$ is the clockwise path once around the box from and to the lower left.
+    \item Proof:\\
+        Let the closed boxes $R^1, R^2, R^3, R^4$ be subdivisions of $R$ in the most natural way (2 by 2). $\oint_{\Gamma(R^1)} f(z) dz + \oint_{\Gamma(R^2)} f(z) dz + \oint_{\Gamma(R^3)} f(z) dz + \oint_{\Gamma(R^4)} f(z) dz = \oint_{\Gamma(R)} f(z) dz$, from just tracing the boundaries.
+\end{itemize}
+
+\subsection{Jan 3: CG-50}
+\begin{itemize}
+    \item A fact more intuitive than necessary: When $q$ is on the line segment $[p,r]$, then $\overrightarrow{pr} \simeq \overrightarrow{pq} \cat \overrightarrow{qr}$, proof by evaluation
+    \item From before, $|\oint_{\Gamma(R^1)} f(z) dz| + |\oint_{\Gamma(R^2)} f(z) dz| + |\oint_{\Gamma(R^3)} f(z) dz| + |\oint_{\Gamma(R^4)} f(z) dz| \geq |\oint_{\Gamma(R)} f(z) dz|$
+    \item It must be true that at least one $|\oint_{\Gamma(R^k)} f(z) dz|$ is at least one quarter of the total, or the above inequality fails. Designate $R^k$, $R_1$. $R$ is sequentially labeled $R_0$
+    \item Repeat this to obtain $R_2$, $R_3$, ... and note that $4^n |I(R_n)| \geq |I(R_0)|$
+    \item $R_n$ closes down on a single point, since the coordinate bounds approach each other by BMCT and squeezing
+\end{itemize}
+
+\subsection{Jan 6: CG-100}
+\begin{itemize}
+    \item Recall the derivative definition:
+        \[f(z) = f(z_0) + f'(z)(z - z_0) + (z - z_0) \ep(z)\]
+        \[|I(R_n)| = \oint_{\Gamma(R_n)} f(z) dz = \oint_{\Gamma(R_n)} f(z_0) dz + \oint_{\Gamma(R_n)} f'(z_0)(z - z_0) + \oint_{\Gamma(R_n)} \ep(z) (z - z_0) dz\]
+        The first two loop integrals are $0$ because the antiderivatives exist, the last requires consideration
+        \[|I(R_n)| = \oint_{\Gamma(R_n)} \ep(z) (z - z_0) dz \leq ML \leq \frac{d_0}{2^n} \max_{z \in \del R_n} |\ep(z)| \frac{P_0}{2^n}\]
+        $P_0$ is the perimeter of the primary box, $d_0$ is its diameter.
+        \[|I(R_0)| \leq 4^n \frac{d_0}{2^n}\frac{P_0}{2^n} \max_{z \in \del R_n} |\ep(z)| = d_0 P_0 \max_{z \in \del R_n} |\ep(z)| \rightarrow 0\]
+\end{itemize}
+
+\subsection{Jan 7: CG-20000}
+\begin{itemize}
+    \item A more general CG deals with functions analytic on a closed box but with finitely many removable singularities at $z_j$,
+        \[\lim_{z \rightarrow z_j} (z - z_j) f(z) = 0\]
+    \item The ultimate CG allows integration over any loop that the function is also analytic on and in
+\end{itemize}
+
+\subsection{Jan 8: CG-314159265}
+\begin{itemize}
+    \item A region with a singleton subtraction is still a region; it is not empty, it is the intersection of two open sets, and if the path connecting two points passes through the point, it is always possible to redirect it in a small disk that is still in the region
+    \item If a function $f$ is analytic on a closed box except at finitely many removable singularities, draw a square with side length $2r$ around each such point, and extend the edges. If an edge now intersects a point, just make $r$ smaller
+    \item Call the original squares $S_j$ and the new rectangles without holes $R_j$
+        \[\oint_{\Gamma(R)} f(z) dz = \sum_{j=1}^m \oint_{\Gamma(R_j)} f(z) dz + \sum_{j=1}^n \oint_{\Gamma(S_j)} f(z) dz = 0 + \sum_{j=1}^n \oint_{\Gamma(S_j)} f(z) dz\]
+        When $r$ is small enough, the limit above establishes the $\ep \, \de$ condition, $|z - p_j||f(z)| < \ep$
+        \[\left|\oint_{\Gamma(S_j)} f(z) dz\right| \leq \oint_{\Gamma(S_j)} \frac{\ep}{|z - p_j|} |dz| \leq ML = \ep \max_{z \in \del S_j} \left( \frac{1}{|z - p_j|}\right) \cdot 8r = 8\ep \rightarrow 0\]
+\end{itemize}
+
+\subsection{Jan 9: CG-2718281828459045}
+\begin{itemize}
+    \item CG for finitely many removable singularities was reviewed
+\end{itemize}
+
+\subsection{Jan 10: CG-$\aleph_0$}
+\begin{itemize}
+    \item A box-convex set is like a convex set, except the closed box with opposite corners as the two points must be contained in the set.
+    \item A relaxed condition is box-convexity with respect to one point, like a starry set except the box between a given point and a floating one must be contained within the set.
+    \item If $f$ is analytic on a box-conves region $U$ with respect to one of its points, and $\gamma$ is a piecewise smooth loop in $U$,
+        \[\oint_{\gamma} f(z) dz = 0\]
+    The proof of this relies on finding an antiderivative of $f$
+    \item Let $F(z) = \int_{L_1^{p_0,z}} f(z) dz$, where $p_0$ is the box-convex center of $U$, and $L_1$ is one of the two zigzag paths with two segments.
+    \item $L_1 \cat L_2^- \simeq \Gamma(R)$, a loop around a box. By CG, $\int_{L_1} f(z) dz + \int_{L_2^-} f(z) dz = 0$, so $\int_{L_1} f(z) dz = \int_{L_2} f(z) dz$, then computations involving $F$ can use either path
+    \item By the same computations as long before, by example:
+        \[\ltz{\alpha} \frac{F(z+\alpha) - F(z)}{\alpha} = \ltz{\alpha} \frac{1}{\alpha} \left(\int_{z,z+\alpha} f(z) dz\right) = f(z)\]
+    and through the average value of $f$ on a segment that approaches the point $z$, $\frac{\del F}{\del x} = f(z), \frac{\del F}{\del y} = if(z)$. By CR, $F'(z) = f(z)$
+\end{itemize}
+
+\subsection{Jan 13: CG-$\aleph_\omega$}
+\begin{itemize}
+    \item To prove that a disk is indeed box-convex with respect to its center $p$:
+        \[|z - p| < r \Rightarrow |(p_x,z_y) - p|^2 + |(p_y,z_x) - p|^2 < r\]
+        \[w \in [p_x,z_x] \times [p_y,z_y] \Rightarrow |(p_x,w_y) - p|^2 + |(p_y,w_x) - p|^2 < r\]
+    \item The calculations above were reviewed
+\end{itemize}
+
+\subsection{Jan 14*: Cauchy Integral Formula}
+\begin{itemize}
+    \item $\gamma = a + re^{it} , t \in [0,2\pi]$, then $\oint_{\gamma} \frac{1}{z-a} dz = \int_0^{2\pi}\frac{1}{a + re^{it} - a} \cdot re^{it} \cdot i dt = \int_0^{2\pi} i = 2\pi i \neq 0$\\
+    There is a pole at $a$, which is necessarily bad enough to violate CG, so the integral is not $0$
+    \item Let $f(z)$ be analytic on a disk around $a$, and $g(z) := \frac{f(z) - f(a)}{z-a}$. Except at $a$, $g(z)$ is just elementary functions of analytic functions, so $g$ is analytic too.
+    \item The singularity of $g$ is not bad enough to violate CG:
+        \[\lim_{z \rightarrow a} g(z) (z-a) = \lim_{z \rightarrow a} (f(z) - f(a)) = 0\]
+    by continuity of $f$\\
+    Let $C$ be a circular loop around $a$, entirely in the disk. Therefore,
+        \[\oint_C g(z) dz = 0\]
+    But also,
+        \[\oint_C \frac{f(z) - f(a)}{z-a} dz = \oint_C \frac{f(z)}{z-a} dz - \oint_C \frac{f(a)}{z-a} dz = \oint_C \frac{f(z)}{z-a} dz - 2\pi i f(a)\]
+    The Cauchy Integral Formula:
+        \[f(a) = \frac{\oint_C \frac{f(z)}{z-a}}{2\pi i}\]
+    The value of $f$ at $a$ is dependent only on the values of $f$ on the circle
+\end{itemize}
+    
+\subsection{Jan 15: CG-$\aleph_{\aleph_{\aleph_{\aleph \hdots}}}$}
+\begin{itemize}
+    \item Precisely stating the "average value on a segment" line of reasoning:
+        \[\frac{1}{\alpha} \int_z^{z + \alpha} f(\hat{x} + iy) d\hat{x} - f(z) = \frac{1}{\alpha} \int_z^{z + \alpha} f(\hat{x} + iy) d\hat{x} - \frac{1}{\alpha} \int_z^{z + \alpha} f(x + iy) d\hat{x} = \frac{1}{\alpha} \int_z^{z + \alpha} f(\hat{x} + iy) - f(x + iy) d\hat{x}\]
+    By the Mean Value Theorem:
+        \[= \frac{1}{\alpha} \int_z^{z + \alpha} \frac{\del f}{\del x} \Big|_{x = x^\star} \cdot (\hat{x} - x) d\hat{x}\]
+    The modulus is bounded by ML:
+        \[|\hdots| \leq \max_{\hat{x} \in [x,x+\alpha]} \left| \frac{\del f}{\del x} \Big|_{x = x^\star} \right| |\hat{x} - x| \rightarrow 0\]
+    The left factor is bounded by EVT, since the partials of $f$ are continuous and there is a compact disk around $z$ containing the interval, and the right term is decreasing to $0$
+\end{itemize}
+
+\subsection{Jan 16: CG-$\Theta$}
+\begin{itemize}
+    \item The march of generalization goes on:
+    \item Let $U$ be a region where $f$ is either analytic or has a removable singularity, and finitely many. The region that $f$ is analytic on is $V$, which must contain $p$, that $U$ is box-convex on. If $\gamma$ is a piecewise smooth loop in $V$,
+        \[\oint_\gamma f(z) dz = 0\]
+    \item It is once again necessary to find an antiderivative of $f$, via two paths from $p$ to $z$ that form axial tiles when concatenated, one in reverse, with one ending in a vertical heading and the other horizontal. Let $L_1$ be the path that first goes up or down into a sufficiently small horizontal strip with $p$ on one boundary so that no removable singularity is in the interior, then to the side to also be in a vertical strip that is sufficiently small with $z$ on one of the boundaries, up or down through it, then to the side again to meet $z$. $L_2$ is the same, but with switched directions. Three axial tiles are formed.
+    \item If $p$ and $z$ are on the same horizontal or vertical line, (assuming it is vertical) both paths start sideways to enter a singularity-free vertical strip, then up through it, and one continues vertically then horizontally to $z$, while the other moves to the side while in a singularity-free horizontal strip, and then vertically. One axial tile is formed.
+    \item Either way, $\oint_{L_1 \cat L_2^-} f(z) dz = \oint_{R_1} f(z) dz + \oint_{R_2} f(z) dz + \oint_{R_3} f(z) dz = 0$ by CG, and the same reasoning takes over.
+\end{itemize}
+
+\subsection{Jan 17: Around and around and around we go!}
+\begin{itemize}
+    \item Winding numbers simplify the concept of "inside a loop", which otherwise is very hard to define
+    \item They are only valid for piecewise smooth loops $\gamma$, though, which is a weakness.
+        \[wn(\gamma,a) = \frac{\oint_\gamma \frac{dz}{z - a}}{2\pi i} = \frac{\int_a^b \frac{\gamma'(t) dt}{\gamma(t) - a}}{2\pi i}\]
+        The winding number of a loop with respect to a point on it is undefined as a result.
+    \item The integral is very reminiscient of something containing $\Log$, however that is not an analytic function, since it requires a branch cut from $a$ to $\infty$ somewhere. This can be cheated, though; find the number of times the loop crosses the cut on the opposite side of where it was before, going in a positive direction around the point.
+    \item Equivalently, count how many times the path crosses an arbitrary cut from $a$ to $\infty$, counting the direction.
+    \item A useful theorem:
+        \[wn(\gamma,a) \in \Z\]
+\end{itemize}
+
+\section{Spring 2020}
+
+\subsection{Jan 28: Around and around and around we go again!}
+\begin{itemize}
+    \item A practical example:
+        \[\gamma(t) = a + re^{it}, t \in [0,2\pi N], N \in \Z\]
+        \[wn(\gamma,a) = \frac{1}{2\pi i} \oint_\gamma \frac{dz}{z-a} = \frac{1}{2\pi i} \int_0^{2\pi N}\frac{ire^{it}}{a + re^{it} - a} = \frac{\int_0^{2\pi N} i dt}{2\pi i} = \frac{2 \pi N i}{2 \pi i} = N\]
+    \item If $\gamma(t) = a + re^{-it}$, then $wn(\gamma,a) = -N$
+    \item To delve deeper:
+        \[\oint_\gamma \frac{dz}{z-a} = \lim_{\ep \rightarrow 0^+} \sum_{j=1}^N \int_{t_{j-1} + \ep}^{t_j - \ep} \frac{\gamma'(t) dt}{\gamma(t) - a}\]
+        Where $t_j$ is the $j^{th}$ time that the loop crosses the cut. The integrand is bounded by EVT and that $\gamma(t) \neq a$
+\end{itemize}
+
+\subsection{Jan 29: Dizziness}
+\begin{itemize}
+    \item \[= \lim_{\ep \rightarrow 0^+} \sum_{j=1}^N \Log(\gamma(t) - a) \big]_{t_{j-1} + \ep}^{t_j - \ep}\]
+        This is true because on each divided path, $\Log$ is analytic
+\end{itemize}
+
+\subsection{Jan 30: Nausea}
+\begin{itemize}
+    \item \[= \lim_{\ep \rightarrow 0^+} \sum_{j=1}^N (\ln|\gamma(t_j - \ep) - a| + i\Arg(\gamma(t_j - \ep) - a) - \ln|\gamma_(t_{j-1} + \ep) - i\Arg(\gamma(t_{j_1} + \ep) - a)|)\]
+        \[= \lim_{\ep \rightarrow 0^+} \sum_{j=1}^N \ln\left| \frac{\gamma(t_j - \ep - a)}{\gamma(t_{j-1} + \ep - a)} \right| + i \lim_{\ep \rightarrow 0^+} \sum_{j=1}^N (\Arg(\gamma(t_j - \ep) - a) - \Arg(\gamma(t_{j-1} + \ep) - a))\]
+        \[= \sum_{j=1}^N \ln\left| \frac{\gamma(t_j) - a}{\gamma(t_{j-1}) - a} \right| + i \sum_{j=1}^N (\Arg(\gamma(t_j) - a) - \Arg(\gamma(t_{j-1}) - a))\]
+        The real part is a telescoping sum, driven to $0$ by the fact that $\gamma(t_0) = \gamma(t_N)$. The imaginary part is a sum of terms that can only be a $-1,0,1$ multiple of $2\pi$, since that is the difference of $\Arg$ across the cut.
+        \[= 0 + 2\pi ni\]
+        \[\frac{2\pi n i}{2 \pi i} = n \in \Z\]
+\end{itemize}
+
+\subsection{Jan 31: Winding Path Math}
+\begin{itemize}
+    \item Basic Properties:
+        \[wn(\gamma^-,a) = -wn(\gamma,a)\]
+        \[wn(\underbrace{\gamma \cat \gamma \cat \hdots \cat \gamma}_k,a) = k\cdot wn(\gamma,a)\]
+        \[wn(\gamma_1 \cat \gamma_2,a) = wn(\gamma_1,a) + wn(\gamma_2,a)\]
+    \item Especially important for finding winding numbers around arbitrary points:
+        \[[a,b] \cap [\gamma] = \O \Rightarrow wn(\gamma,a) = wn(\gamma,b)\]
+        The argument is simple, but first, expose a versatile truth,
+        \[z \notin {a,b} \Rightarrow \R \ni \frac{z-a}{z-b} < 0 \Leftrightarrow z \in (a,b)\]
+        If $z \notin [a,b]$, then $\Log \frac{z-a}{z-b}$ is analytic:
+        \[\frac{d}{dz} \Log \frac{z-a}{z-b} = \frac{z-b}{z-a} \cdot \frac{(z-b) + (a-z)}{(z-b)^2} = \frac{a-b}{(z-a)(z-b)} = \frac{1}{z-a} - \frac{1}{z-b}\]
+        \[\oint_\gamma \left( \frac{dz}{z-a} - \frac{dz}{z-b} \right) = 0 \text{ by FTC}\]
+        \[\oint_\gamma \left( \frac{dz}{z-a} - \frac{dz}{z-b} \right) = 2\pi i (wn(\gamma,a) - wn(\gamma,b)) = 0\]
+    \item Even better, by continuous induction extension, 
+        \[\exists \delta:[0,1] : \delta(0) = a \land \delta(1) = b \land [\delta] \cap [\gamma] = \O \Rightarrow wn(\gamma,a) = wn(\gamma,b)\]
+\end{itemize}
+
+\subsection{Feb 3: A Slice of Complex Pie}
+\begin{itemize}
+    \item A base case:
+        \[[\gamma] \in \text{ open disk }\Delta \land a \notin \bar{\Delta} \Rightarrow wn(\gamma,a) = 0\]
+    \item To prove this, more versatility is needed in the definition of winding number; the branch cut must be movable!
+    \item Take any $\alpha$, and the ray $\Arg = \alpha$, then define a rotated $\Arg$:
+        \[\Arg_{(\alpha)} z = \Arg(e^{(\pi - \alpha)i} z) - (\pi - \alpha)\]
+        The branch cut is now located on the ray, which also represents the maximum of $\Arg$, winding around to nearly a full $2\pi$ lesser. Naturally, $\Arg_{(\pi)} z = \Arg z$
+    \item Any one of these arguments only takes on values in $(-3\pi,3\pi)$, to generalize the argument fully,
+        \[\Arg_{(N,\alpha)} = \Arg_{(\alpha)} + 2\pi N\]
+    \item The new definitions perfectly satisfy tenets of arguments, being the inverses of $\cis$
+    \item The associated logarithms are defined exactly as you would expect, and they also act just as well as inverses of $\exp$
+    \item To complete the proof, simply take the $\alpha$ value of the ray from the center of $\Delta$ to $a$, then the winding number is the loop integral of an analytic function, or $0$
+    \item Any such $a$ is defined to be in the exterior of the loop
+\end{itemize}
+
+\subsection{Feb 5: Loop Forever}
+\begin{itemize}
+    \item One sticking point:
+        \[\frac{d}{dz} \Log_{(\alpha)} z \; ?\]
+    \item Define $w$ and $z$ as rotations of each other: $w = e^{i(\pi - \alpha)} z$
+        \[\Log_{(\alpha)} (e^{i(\alpha - \pi)} w) = \Log_{(\alpha)} (e^{i(\alpha - \pi)} e^{i(\pi - \alpha)} z) = \Log_{(\alpha)} z = \ln|z| + \Arg_{(\alpha)} z = \ln|z| + i(\Arg(e^{i(\pi - \alpha)} z) + (\alpha - \pi))\]
+        \[ = \ln|w| + i\Arg w + i(\alpha - \pi) = \Log w + i(\alpha - \pi)\]
+        \[\frac{d}{dw} \Log_{(\alpha)} (e^{i(\alpha - \pi)} w) = \frac{1}{w} = \frac{1}{e^{i(\pi - \alpha)} z}\]
+        \[\frac{dw}{dz} \frac{d}{dw} \Log_{(\alpha)} (e^{i(\alpha - \pi)} w) = \frac{d}{dz} \Log_{(\alpha)} z = \frac{1}{z}\]
+    \item Pointwise products of paths are just that, with both paths on the same domain.
+        \[wn(\gamma_1 \cdot \gamma_2,0) = wn(\gamma_1,0) + wn(\gamma_2,0)\]
+        This is mostly because of complex multiplication being equivalent to adding angles. 
+        \[\frac{\oint_{\gamma_1 \cdot \gamma_2} \frac{dz}{z-0}}{2\pi i} = \frac{\oint_0^1 \frac{(\gamma_1 \cdot \gamma_2)'(t) dt}{(\gamma_1 \cdot \gamma_2)(t)}}{2\pi i}\]
+        Logarithmic derivatives have a surprisingly simple property: $\frac{(fgh)'}{fgh} = \frac{f'}{f} + \frac{g'}{g} + \frac{h'}{h}$:
+        \[= \frac{\oint_0^1 \frac{\gamma_1'(t)}{\gamma_1 (t)} dt + \oint_0^1 \frac{\gamma_2'(t)}{\gamma_2 (t)} dt} {2\pi i}\]
+        A pointwise quotient would produce the intended difference.
+\end{itemize}
+
+\subsection{Feb 6: Loop Once}
+\begin{itemize}
+    \item A condition for $wn = 0$ is nice, but what about a general condition for $wn = 1$?
+    \item Let $\gamma$ be a piecewise smooth loop starting from $z_1: \Re(z_1) < 0$ and cut into two paths $\gamma_{12},\gamma_{21}$ by $z_2: \Re(z_2) > 0$. If $[\gamma_{12}] \cap \R^- = [\gamma_{21}] \cap \R^+ = \O$, then
+        \[wn(\gamma_0,0) = 1\]
+    \item To prove this, draw a picture, indicate a small positive circular loop, and points $w_1,w_2$ where the rays from $0$ to $z_1,z_2$ intersect the circle. There are now two distinct loops that both avoid one real semi-axis, so both have winding number $0$ around $0$
+        \[\sigma_1 = {\gamma_{12}} \cat \overrightarrow{z_2 w_2} \cat \overset{\curvearrowright}{w_1 w_2} {}^- {}\cat \overrightarrow{w_1 z_1}\]
+        \[\sigma_2 = \overrightarrow{z_1 w_1} \cat \overset{\curvearrowright}{w_2 w_1} {}^- {}\cat \overrightarrow{w_1 z_1} \cat \gamma_{21}\]
+        By adding segments, the two straight segments cancel, and the sum of the winding numbers of $\gamma$ and the reversed circle is 0, so $wn(\gamma,0) = 1$
+\end{itemize}
+
+\subsection{Feb 7: CIF}
+\begin{itemize}
+    \item Consider $f$ analytic on some disk $\Delta^\circ$ except for finite removable singularities $\{p_k\}$; piecewise smooth $\gamma$ in $\Delta^\circ \backslash \{p_k\}$; a point $a \in \Delta^\circ \backslash ([\gamma] \cup \{p_k\})$; 
+    \item Let $g(z) = \frac{f(z) - f(a)}{z - a}$
+        \[g'(z) = \frac{(z-a)f(z) - (f(z) - f(a))}{(z-a)^2}\]
+        Then $g$ is analytic on $\Delta^\circ \backslash (\{p_k\} \cup a)$
+    \item The singularities of $g$ are also removable, by continuity of $f$ and its singularities being removable, therefore:
+        \[\oint_\gamma g(z) dz = 0 \text{ by CG}\]
+        \[= \oint_\gamma \frac{f(z) - f(a)}{z-a} dz = \oint_\gamma \frac{f(z)}{z-a} dz - \oint_\gamma \frac{f(a)}{z-a}\]
+        \[0 = \oint_\gamma \frac{f(z)}{z-a} - 2\pi i \cdot wn(\gamma,a) f(a)\]
+        or, rearranged, the Cauchy Integral Formula:
+        \[f(a) = \frac{\oint_\gamma \frac{f(z)}{z-a}}{2\pi i \cdot wn(\gamma,a)}\]
+\end{itemize}
+
+\subsection{Feb 10: Path Components}
+\begin{itemize}
+    \item A piecewise smooth loop divides the plane into many regions:
+        \[U_p = \{z | \exists \gamma_{pz} : \gamma_{pz} \cap [\gamma] = \O\}\]
+        One component is always unbounded, this is the exterior of the loop.
+    \item Regionality is easy to prove:
+    \begin{itemize}
+        \item Openness: The loop is a continuous image of a compact set ([0,1]), and $p$ is compact, so the distance between the two is positive. Select a small enough $r$, then any point in $B_r(z)$, which does not touch the loop, is reachable from $z$, and $z$ is reachable from $p$. The whole disk is in the component.
+        \item Connectedness:
+        A path must exist, this is the condition of the set.
+    \end{itemize}
+    \item Two path components are disjoint or equal, since connectedness and a single point in common makes all points in both components reachable from the both components.
+    \item There are countably many components formed from a piecewise smooth loop: Each contains a point with rational components due to density, and there are countably many to go around.
+\end{itemize}
+
+\subsection{Feb 11: CIF$'$}
+\begin{itemize}
+    \item By the zigzag lemma, every path component is zigzag-connected, so the previous result is proved:
+        \[z \in U_p \Rightarrow wn(\gamma,z) \equiv c\]
+    \item To derive CIF', use CIF to reformulate $f(z+h)$ around a circle, then form the difference quotient of $f$ and take limits:
+\end{itemize}
+
+\subsection{Feb 12: CIF$''$}
+\begin{itemize}
+    \item Actually do it!
+            \[\frac{f(z+h)- f(z)}{h} = \frac{1}{2 h \pi i} \oint_C \frac{h f(w) dw}{(w - (z + h))(w - z)} \rightarrow \frac{1}{2 \pi i} \oint_C \frac{f(w) dw}{(w - z)^2}\]
+        Dominated convergence can be used to justify the limit step (whenever the limits of integration are finite, the integrand is continous in the integration variable and the limit variable, and the limit of the integrand is continuous in the integration variable), but the integrals themselves are simple enough; better to not bring a cannon to a knife fight. Call the integrand $F(t,h)$
+            \[\ltz{h} F(t,h) = G(t)\]
+        Both are continuous functions of $t$
+            \[\left| \int_a^b F(t,h) - G(t) \right| = \left| \int_a^b \left( F(t,h) - G(t) \right) \right| \leq \int_a^b \left| F(t,h) - G(t) \right| \leq (b-a) \max_{t \in [a,b]} (F(t,h) - G(t)) \leq (b-a) \ep(h) \rightarrow 0\]
+        Uniform Continuity is very useful!
+    \item This computation can be repeated as many times as wanted, since only $f(z)$ appears on the right side. By induction,
+        \[f^{(n)}(z) = \frac{n!}{2\pi i} \oint_C \frac{f(w) dw}{(w-z)^{n+1}}\]
+        If one derivative exists, all must.
+\end{itemize}
+
+\subsection{Feb 13: CIF$''''''''''$}
+\begin{itemize}
+    \item By induction, the base case $n=0$ is just CIF:
+        \[f^{(n)}(z) = \frac{n!}{2\pi i} \oint_C \frac{f(w) dw}{(w-z)^{n+1}}\]
+        \[\frac{f^{(n)}(z+h) - f^{(n)}(z)}{h} = \frac{n!}{2h\pi i} \oint_C \left( \frac{f(w)}{(w-z)^{n+1}} - \frac{f(w)}{(w-(z+h))^{n+1}}\right) dw\]
+        \[= \frac{n!}{2h\pi i} \oint_C \left( \frac{f(w)(h) \left(\displaystyle \sum_{i = 0}^n (w-z)^i (w-(z+h))^{n-i} \right)}{(w-z)^{n+1} (w-(z+h))^{n+1}} \right) dw\]
+        \[\rightarrow \frac{n!}{2\pi i} \oint_C \frac{f(w) (n+1)(w-z)^n dw}{(w-z)^{2n+2}} = \frac{(n+1)!}{2\pi i} \oint_C \frac{f(w) dw}{(w-z)^{n+2}} = f^{(n+1)}(z)\]
+\end{itemize}
+
+\subsection{Feb 14: Taylor is Everywhere}
+\begin{itemize}
+    \item Let $f$ be analytic on a punctured disk $B$ centered at $a$, with a removable singularity there. Taylor's Theorem asserts:
+        \[\exists \overset{c}{f} \text{ analytic on } B : (\forall z \in B, z \neq a)(f(z) = \overset{~}{f}(z)) \]
+        \[\overset{c}{f}(z) = \begin{cases}
+            f(z) & z \neq a\\
+            \frac{1}{2 \pi i} \oint_C \frac{f(w) dw}{w - a} & z = a\\
+        \end{cases}\]
+    \item Effectively a very mild analytic continuation, this function is clearly analytic off of $a$, but is it also so at $a$?
+        \[\frac{\overset{c}{f}(a+h) - \overset{c}{f}(a)}{h} = \frac{f(a+h) - \frac{1}{2 \pi i} \oint_C \frac{f(w) dw}{w - a}}{h} = \frac{\frac{1}{2 \pi i} \oint_C \frac{h f(w) dw}{(w - a)(w - a - h)}}{h} = \frac{1}{2 \pi i} \oint_C \frac{f(w) dw}{(w - a - h)(w - a)}\]
+        \[\rightarrow \frac{1}{2 \pi i} \oint_C \frac{f(w) dw}{(w - a)^2} = \overset{c}{f} {}'(a) \]
+        Then the new function is analytic on the whole disk!
+    \item Removability is essential, or else the DCT might not apply
+\end{itemize}
+
+\subsection{Feb 24: Buzzer Beater}
+\begin{itemize}
+    \item Previous concepts were reviewed
+\end{itemize}
+
+\subsection{Feb 25: Brooklyn Potholes}
+\begin{itemize}
+    \item Analytic continuation allows a removable singularity to be removed, at the center of a disk that also may contain finitely many other removable discontinuities.
+    \item By induction, remove each one inside a small enough circular loop until there are none left! The final function is analytic on the whole disk
+\end{itemize}
+
+\subsection{Feb 26: Taylor E x p a n s i o}
+\begin{itemize}
+    \item The terms of the Taylor Expansion of $f$ analytic on $\Delta$ that are mostly powers of $(z-a)$ are easy to obtain:
+        \[F(z) = \frac{f(z) - f(a)}{z-a}\]
+        $F$ is removably undefined at $a$, which is quite clear. Since $f$ is analytic on the disk, $F$ is also elsewhere. Then just label $f_1(z)$ the analytic continuation of $F(z)$
+        \[f(z) = f(a) + (z-a)f_1(z)\]
+        Continue by induction, with $f_2, f_3, \hdots f_n$
+        \[f(z) = f(a) + (z-a)f_1(a) + (z-a)^2f_2(a) \hdots (z-a)^nf_n(z)\]
+        This form is extremely familiar, and there is mounting suspicion as to the identity of $f_i(a)$. To find it, simply differentiate $n$ times. Every single term of the sum immediately vanishes, except for the sole $(z-a)^n$ term
+        \[f^{(n)}(z) = \frac{d^n}{dz^n} (z-a)^n f_n(z)\]
+        The multiple derivative of a product can be found using Leibniz's fancy Product Rule, derived from induction on $n$ and utilizing the wonderful properties of Pascal's Triangle
+        \[\frac{d^n}{dz^n} (z-a)^n f_n(z) = \sum_{j=0}^n \binom{n}{j} \frac{d^j}{dz^j} (z-a)^n \cdot \frac{d^{n-j}}{dz^{n-j}} f_n(z)\]
+        Let $z=a$, then only the term where $j=n$ will survive,
+        \[f^{(n)}(a) = n! f_n(a)\]
+        \[f(z) = \frac{f(a)}{0!} (z-a)^0 + \frac{f'(a)}{1!} (z-a)^1 + \frac{f''(a)}{2!} (z-a)^2 + \hdots\]
+        It's our old friend, the Taylor Series!
+\end{itemize} 
+
+\subsection{Feb 27: Taylor \quad \quad \quad \quad \quad \quad \quad n}
+\begin{itemize}
+    \item $f_n(z)$ is much more dynamic, and harder to determine, but CIF will always work:
+        \[f_n(z) = \frac{1}{2\pi i} \oint_C \frac{f_n(w)}{w-z} dw\]
+    \item The definition can be expanded,
+        \[= \frac{1}{2\pi i} \oint_C \frac{f(w) - f(a) - \frac{f'(a)}{1!} (w-a) - \frac{f''(a)}{2!} (w-a)^2 - \hdots - \frac{f^{(n-1)}(a)}{(n-1)!}(w-a)^{n-1}}{(w-z)(w-a)^n} dw\]
+        \[= \frac{1}{2\pi i} \oint_C \frac{\frac{f(w)}{(w-a)^n} - \frac{f(a)}{(w-a)^n} - \frac{f'(a)}{1! (w-a)^{n-1}} - \frac{f''(a)}{2! (w-a)^{n-2}} - \hdots - \frac{f^{(n-1)}(a)}{(n-1)! (w-a)}}{(w-z)} dw\]
+        Introduce some constants because they are unimportant
+        \[= \frac{1}{2\pi i} \oint_C \left( \frac{f(w)}{(w-z)(w-a)^n} - \frac{A_0}{(w-z)(w-a)^n} - \frac{A_1}{(w-z)(w-a)^{n-1}} - \hdots - \frac{A_{n-1}}{(w-z)(w-a)} \right) dw\]
+        \[= \frac{1}{2\pi i} \left( \oint_C \frac{f(w) dw}{(w-z)(w-a)^n} - \oint_C \frac{A_0 dw}{(w-z)(w-a)^n} - \oint_C \frac{A_1 dw}{(w-z)(w-a)^{n-1}} - \hdots - \oint_C \frac{A_{n-1} dw}{(w-z)(w-a)} \right)\]
+        Consider the simplest of the named integrals,
+        \[\oint_C \frac{dw}{(w-z)(w-a)} = \oint_C \left( \frac{\frac{1}{z-a}}{w-z} + \frac{-\frac{1}{z-a}}{w-a} \right) = \frac{1}{z-a} \left( \oint_C \frac{dw}{w-z} - \oint_C \frac{dw}{w-a} \right) = 0\]
+        The two integrals are winding numbers! Since $C$ can be made large enough to contain both $z$ and $a$ in its interior, then the term vanishes everywhere. What about the other terms?
+        \[\frac{d}{da} \oint_C \frac{dw}{(w-z)(w-a)} = \frac{1}{w-z} \oint_C \frac{d}{da} \frac{dw}{w-a} = \frac{1}{w-z} \oint_C \frac{dw}{(w-a)^2} = \oint_C \frac{dw}{(w-z)(w-a)^2} = 0\]
+        DCT is required; then, by induction, every single named term is just a constant multiple of a derivative of the zero function, so all are zero.
+        \[f_n(z) = \frac{1}{2\pi i} \oint_C \frac{f(w) dw}{(w-z)(w-a)^n} \quad \quad \quad (R^a_n f)(z) = \frac{(z-a)^n}{2\pi i} \oint_C \frac{f(w) dw}{(w-z)(w-a)^n}\]
+\end{itemize}
+
+\subsection{Feb 28: Everything is Named After Cauchy}
+\begin{itemize}
+    \item Use the two available definitions of $f_n(a)$,
+        \[\frac{f^{(n)}(a)}{n!} = \frac{1}{2\pi i} \oint_C \frac{f(w) dw}{(w-a)^{n+1}}\]
+        This equality is equally justiifed by $CIF''''''''''$, of course. Apply the triangle inequality,
+        \[|f^{(n)}(a)| \leq \frac{n!}{2 \pi \cdot 1} \oint_C \frac{|f(w) dw|}{|w-a|^{n+1}}\]
+        Let $a$ be the center of $C$, then $|w-a|$ is constant:
+        \[= \frac{n!}{2\pi} \oint_C \frac{|f(w) dw|}{r^{n+1}}\]
+        ML bounds!
+        \[\leq \frac{n!}{2\pi r^{n+1}} \cdot \max_{w \in [C]} |f(w)| \cdot 2\pi r \leq \frac{n!}{2 \pi r^n} \max_{[C]} |f|\]
+        Letting $n$ vary produces the Cauchy Bounds
+    \item Liouville's Theorem from far above can now be proven. Use $n=1$ in the Cauchy Bound to obtain
+        \[|f'(a)| \leq \frac{\displaystyle \max_{[C]} |f|}{r} \leq \frac{B}{r}\]
+        $B$ is the global maximum modulus, which by hypothesis must exist
+        \[\lti{r} |f'(a)| \leq \lti{r} \frac{B}{r} = 0\]
+        Thus $f'(a)$ is zero, and  $f(a)$ is a constant
+\end{itemize}
+
+\subsection{Mar 2: Interpolation}
+\begin{itemize}
+    \item The Cauchy bounds are moderately useful when $n=0$:
+        \[|f(a)| \leq \max_{[C]} |f|\]
+    \item More polynomial properties were reviewed; a constant polynomial has degree $0$ or less polynomial! $p(z) - c$ would be always 0, and a $d$-degree polynomial, with $d \geq 1$ and nonzero leading coefficient can only have $d$ roots. Either the leading coefficient is zero, in which case just consider the $d-1$-degree polynomial, or the degree is zero or less.
+\end{itemize}
+
+\subsection{Mar 3: Polynomial Fun}
+\begin{itemize}
+    \item The Remainder Theorem: Given $f,g \in P(\C) \land g \neq 0$, then just one quotient-remainder pair $(q,r)$ exists such that $f = gq + r$, when $r$ is of lower degree than $q$
+    \item The FTA was totally proven; see far above
+\end{itemize}
+
+\subsection{Mar 5*: Marechal general de France Liouville}
+\begin{itemize}
+    \item The General Liouville's Theorem for polynomial $f$:
+        \[(\exists A > 0, R > 0, N \in \N : |z| > R \Rightarrow |f(z)| < A|z|^N) \Rightarrow \deg f \leq N\]
+    \item To prove this, make a circle around $a$, but the radius has to be large enough so that the circle is always $R$ away from the origin: $r > R + |a|$ suffices
+    \item Use Cauchy bounds with $n = n$, $|f^{(n)}| \leq \frac{n!}{r^n} \max_{z \in [C]} A |z|^n \leq \frac{n!}{r^n} A (\max_{z \in [C]})^n \leq n! A \frac{(r + |a|)^N}{r^n}$
+    Whenever $n \leq N+1$, then $|f^{(n)}(a)| \rightarrow 0$, since the scaling is of negative power. Only when $n \leq N$, the $n-$th derivative is non-zero, and that is exactly a polynomial of degree at most $N$
+\end{itemize}
+
+\subsection{Mar 6*: Maximum Modulus}
+\begin{itemize}
+    \item An analytic function $f$ on region $U$ either attains the maximum modulus on the boundary or is constant.
+    \item Assume that the maximum modulus was at $p$, inside $U$. A small enough circle $C$ around $p$ exists by openness, so CIF around it
+        \[f(z) = \frac{1}{2\pi i} \oint_C \frac{f(w)}{w-z} dw\]
+        \[f(p) = \frac{1}{2\pi i} \oint_C \frac{f(w)}{w-p} dw\]
+        \[|f(p)| \leq \frac{1}{2\pi} \oint_C \frac{|f(w)|}{|w-p|} |dw| = \frac{1}{2\pi r} \oint_C |f(w)| |dw| \leq \frac{1}{2\pi r} \oint_C |f(p)||dw| = \cancel{\frac{2\pi r}{2\pi r}} |f(p)|\]
+        Equality must hold in each of the comparisons, in particular,
+        \[\oint_C |f(w)||dw| = \oint_C |f(p)||dw|\]
+        \[0 = \oint_C (|f(w)| - |f(p)|) |dw|\]
+        But, $|f(p)|$ is always greater than or equal to $|f(w)|$; for the integral to not be negative, 
+        \[(\forall w \in [C]) (|f(w)| = |f(p)|)\]
+        C-R equations then justify the removal of modulus,
+        \[\frac{\del(u^2 + v^2)}{\del x} = 2u \frac{\del u}{\del x} + 2v\frac{\del v}{\del x} = 0 = 2u \frac{\del u}{\del y} + 2v\frac{\del v}{\del y}  = \frac{\del(u^2 + v^2)}{\del y}\]
+        \[u \frac{\del u}{\del x} + v \frac{\del v}{\del x} = 0 = - u \frac{\del v}{\del x} + v \frac{\del u}{\del x}\]
+        \[u^2 \frac{\del u}{\del x} + uv \frac{\del v}{\del x} = 0 = - uv \frac{\del v}{\del x} + v^2 \frac{\del u}{\del x}\]
+        \[(u^2 + v^2) \frac{\del u}{\del x} = 0\]
+        Either $|f(z)|$ is just always $0$, or $\frac{\del u}{\del x}$ is always $0$. Similar argument reveals $\frac{\del v}{\del x} = 0$, then $f'(z) = 0$ and,
+        \[(\forall w \in [C]) (f(w) = f(p))\]
+    \item Consider the zigzag path between $z_0$ and any other point which must exist. The distance between the compact path and the closed complement of the region is always greater than $0$, so a circle of appropriate radius always exists fully inside the region.
+    \item Advance along each segment of the path with identical disks, with $f$ constant on each. They overlap, so along every segment, $f$ is constant. The second point is arbitrary, then $f$ is constant on the whole region
+\end{itemize}
+
+\subsection{Mar 9: Gen Liouville Thm}
+\begin{itemize}
+    \item The proof of the Generalized Liouville's Theorem was reviewed
+\end{itemize}
+
+\subsection{Mar 10: Schwarz Lemma}
+\begin{itemize}
+    \item For analytic $f: B_1 \rightarrow \bar{B}_1$ with $f(0) = 0$, then $|f(z)| \leq |z|$ - loose contraction - and if at any point $|f(z)| = |z|$ of $|f'(0)| = 1$, $f(z)$ is a rotation
+\end{itemize}
+
+\subsection{Mar 11: MaxMod}
+\begin{itemize}
+    \item The Maximum Modulus Principle was reviewed
+\end{itemize}
+
+\subsection{Mar 12: MinMod}
+\begin{itemize}
+    \item The Minimum Modulus Principle is essentially the same thing as the Maximum Modulus Principle, except the function must also be nonvanishing; it is proved with the Maximum Modulus Principle and $g = \frac{1}{f}$
+    \item By both modulus properties, analytic nonvanishing $|f|$ can only have an extremum on the boundary of the region, and only saddle points inside it
+    \item Moreover, using Liouville, modulus,$\hdots$ the General FTA is now seen for entire $f$:
+        \[\lti{z} |f(z)| = \infty \Rightarrow \exists z_0 : f(z_0) = 0\]
+        The limit to infinity must be in every direction, which is a little restrictive
+\end{itemize}
+
+\subsection{Mar 13: in Absentio}
+\begin{itemize}
+    \item Order has begun to break down!
+\end{itemize}
+
+\subsection{Mar 16: The Far Reaches}
+\begin{itemize}
+    \item The birth of the illustrious \cancel{YouTube} ShowMe career of Joseph Stern!
+\end{itemize} 
+
+\subsection{Mar 19: MeanVal}
+\begin{itemize}
+    \item MVP gives:
+        \[f \text{ analytic in } D_R(p) \land 0 < r < R \Rightarrow f(p) = \frac{1}{\ell(C_r)} \oint_{C_r} f(z) |dz| = \frac{1}{2\pi r} \oint_{C_r} f(z) |dz|\]
+        or the average value on the circle. For any parameterization of $C$ that has the same length, the value is the same, so the once-counterclockwise loop can substitute for many once-covering loops. \\
+        A necessary conclusion is that arclength integrals are invariant on path length, but this follows the same argument as for path integrals. 
+    \item This is an almost direct result of the CIF, with the loop as a circle around $p$.
+        \[f(p) = \frac{1}{2\pi i} \oint_{C_r} \frac{f(z)}{z-p} dz\]
+        Let $C$ be the specific traversal $p + re^{it}$ with $t \in [0,2\pi]$, and $C' = ire^{it}$
+        \[=\frac{1}{2\pi i} \int_0^{2\pi} \frac{f(p + re^{it})}{re^{it}} rie^{it} dt = \frac{1}{2\pi r} \int_0^{2\pi} f(p + re^{it}) r dt = \frac{1}{2\pi r} \int_0^{2\pi} f(p+re^{it}) r|ie^{it}| dt = \frac{1}{2\pi r} \oint_C f(z) |dz| = \underset{C}{\text{avg}} \, f\]
+\end{itemize}
+
+\subsection{Mar 20: Schwarz Lemma, Orders of Roots}
+\begin{itemize}
+    \item To review: analytic $f$ on $D_1(0) \rightarrow \bar{D_1}(0)$ with fixed point $0$ is either contracting: $|f(z)| < |z|$ when $z \neq 0$ and $|f'(0)| < 1$, or it is a restricted rotation around $0$
+    \item Let $g(z) = \begin{cases} \frac{f(z)}{z}, & z \neq 0 \\ f'(0), & z=0 \end{cases}$. $0$ is a removable singularity of the larger piece; 
+            \[\ltz{z} (z-0)(\frac{f(z)}{z}) = \ltz{z} f(z) = 0\]
+        Remove it:
+            \[\ltz{z} \frac{f(z)}{z} = f'(0), \text{ which exists by analyticity}\]
+        Then $g$ is also analytic on the whole disk!
+    \item Apply MaxMod on $g$ and a smaller closed disk $K_r = \bar{D_r}$, then the maximum modulus of $g(z)$ exists and is at $|z| = r$, say $z_0$
+            \[|g(z_0)| = \left|\frac{f(z_0)}{z_0}\right| = \frac{|f(z_0)|}{r} \leq \frac{1}{r}\]
+        $z_0$ was a maximum, then
+            \[z \in K_r \Rightarrow |g(z)| \leq \frac{1}{r}\]
+        Let $r \rightarrow 1^-$
+            \[z \in D_1 \Rightarrow |g(z)| \leq 1\]
+            \[z \neq 0 \Rightarrow |f(z)| \leq |z| \land z = 0 \Rightarrow |f'(z)| = |f'(0)| \leq 1\]
+    \item Two cases: either $|f(z)| < |z| \land |f'(0)| < 1$, or equality is true somewhere, $\exists z_0 : |f(z_0)| = |z_0| \lor |f'(0)| = 1$. The first is just the contracting case, the second requires investigation.
+    \item If equality is true anywhere, then $|g(z)|$ is its maximum there, $1$. However, this must happen inside open $D$, so by MaxMod again, $|g(z)|$ is constantly  $1$, and $f(z) = cz$ by either partial definition of $g$
+    \item New topic: $f$ is analytic on region $U$, and it is not just $0$. Assume that there is at least one root $p$, then $\exists N : f^{(N)}(p) \neq 0$, and $n = \text{ord}(p,f) = \min \{N\}$. Essentially, there is no root that has infinite order.
+    \item Suppose that a root did have infinite order, then for $z$ close enough to $p$, Taylor's Thm gives 
+            \[f(z) = R^p_n (z) = \frac{(z-p)^n}{2\pi i} \oint_{C(p)} \frac{f(w)dw}{(w-z)(w-p)^n}\]
+        for any $n \geq 1$, since the Taylor Polynomial is just $0$. Use ML to bound the integral,
+            \[|f(z)| \leq \frac{|z-p|^n}{\cancel{2\pi}} \cancel{2 \pi} r \max_{[C]} \left| \frac{f(w)}{(w-z)r^n} \right| \leq \frac{|z-p|^n}{r^{n-1}} \frac{\displaystyle \max_{[C]} |f(w)|}{\displaystyle \min_{[C]} |z-w|}\]
+            \[|w-z| = |(w-p)-(z-p)| \geq ||w-p|-|z-p|| = |r - |z-p|| = r - |z-p|\]
+            \[|f(z)| \leq \left( \frac{|z-p|}{r - |z-p|} \right) \left( \frac{|z-p|}{r} \right)^{n-1} \max_{[C]} |f| \overset{n \rightarrow \infty}{\rightarrow} \left( \frac{|z-p|}{r - |z-p|} \right) 0 \max_{[C]} |f| = 0\]
+        Then $f(z) = 0$ for $z$ in a disk around $p$, then use the same argument as for MaxMod (with disks along a zigzag path) to show $f(z) = 0$ on $U$, which is in contradiction to the assumption that $f(z)$ is not just $0$.
+    \item A corollary; roots of an analytic not zero function in a region $U$ are isolated, or there is a disk around each root $p$ where it is the only root.
+\end{itemize}
+
+\subsection{Mar 24: Isolated Roots}
+\begin{itemize}
+    \item Proof! Let $n = \text{ord}(p,f)$, then Taylor's Thm on a small disk gives, up to order $n$ i.e. $f^{(n)}(p) \neq 0$:
+            \[f(z) = 0 + R^p_n(z) = (z-p)^n f_n(z)\]
+        Both $f(z)$ and the polynomial are analytic, so $f_n(z)$ is too. This $f_n(z)$ is the one described much earlier as $f_{n-1}(z) = f_{n-1}(p) + (z-p)f_n(z)$, which also means that $f_n(z) = \frac{f^{(n)}(p)}{n!} \neq 0$, precisely the Taylor Terms,
+    \item Since for $z$ not at $p$, $(z-p)^n \neq 0$, $f(z) \neq 0$ in a small disk around $p$, not at $p$, or $p$ is an isolated root
+    \item A corollary: If analytic $f$ on region $U$ is zero on $S \subseteq U$ such that an accumulation point of the set $S$, $p \in U$, then $f$ is zero on $U$. This follows almost directly from the above proof; $f$ is continuous, so using sequence $s_n\in S$, $s_n \rightarrow p \Rightarrow f(s_n) = 0 \rightarrow f(p)$. $p$ is a root, however it cannot be isolated, since $S$ is arbitrarily close to it. Then $f$ is just the zero function on $U$.
+    \item Another corollary to follow: analytic $f$ on region $U$ that is zero on $S$, where $S$ is either a subregion or a non-singleton path trace is zero on $U$. Both those types of sets are clearly not isolable. 
+\end{itemize}
+
+\subsection{Mar 31: Taylor Series}
+\begin{itemize}
+    \item Analytic $f$ defined on region $U \ni p$ has the distance attribute $r = \text{dist} (p,\C \backslash U) > 0$
+            \[(\forall z \in D_r(p))\left( f(z) = \sum_{n=0}^\infty \frac{f^{(n)}(p)}{n!} (z-p)^n \right)\]
+        Convergence to the correct value is only guaranteed as long as $f$ is analytic. Absolute convergence by itself is granted only in a possibly larger disk $D_R(p)$ given by Hadamard's Formula as long as this limit exists:
+            \[R = \frac{1}{\displaystyle \lti{n} \sqrt[n]{|a_n|}}\]
+        where $a_n$ are the coefficients of the power series. Clearly, the series Root Test is connected:
+            \[\sum a_n z^n \text{ converges } \Leftrightarrow \sqrt[n]{|a_n|}\sqrt[n]{|z^n|} = \sqrt[n]{|a_n|} |z| \rightarrow l|z| < 1\]
+            \[|z| < \frac{1}{l}\]
+        For a point on the circle, convergence is unfortunately unknown
+    \item Proof! Let $C = C_\rho$ entirely in the region of analyticity. For all $z$ in $D_\rho$,
+            \[f(z) = \sum_{n=0}^{N-1} \frac{f^{(n)}(p)}{n!}(z-p)^n + \frac{(z-p)^N}{2\pi i} \oint_C \frac{f(w) dw}{(w-z)(w-p)^N}\]
+            \[|R_N^p(z)| \leq \frac{|z-p|^N}{\cancel{2\pi}} \cancel{2\pi}\rho \frac{\max_{[C]} |f|}{\min_{[C]} |w-z|} \frac{1}{\rho^{N}}\]
+            \[= \left(\frac{|z-p|}{\rho}\right)^N \frac{\rho}{\rho-|z-p|} \max_{[C]} |f| \overset{N \rightarrow \infty}{\rightarrow} 0\]
+        The partial sums of the Taylor Series must converge to $f(z)$!
+    \item It's Numbers Time again!
+            \[f(z) = \frac{1}{1-z}\]
+        A Taylor series around $0$ has but a radius of $1$ to be correct in.
+            \[a_n = \frac{1}{n!} f^{(n)}(0)\]
+            \[= \frac{1}{n!} \frac{d^n}{dz^n}(1-z)^{-1} |_{z=0}\]
+            \[= \frac{1}{n!} (-1)(-2)\hdots(-n)(1-z)^{-n-1}(-1)^n|_{z=0}\]
+            \[= \frac{1}{n!} (-1)^n n! (-1)^n (1-0)^{-n-1} = 1\]
+        Just as we thought! In this case the radius of convergence is exactly the radius of analyticity, $1$. Try Hadamard's Formula just to see if it works:
+            \[R = \frac{1}{\lti{n} \sqrt[n]{|1|}} = 1\]
+\end{itemize}
+
+\subsection{Apr 2: Power Series}
+\begin{itemize}
+    \item The radius of convergence is generally, 
+            \[R = \sup \{r\geq 0 | |a_n|r^n \text{ is bounded}\}\]
+        $0$ is definitely a element of the set (which is also downward-closed above $0$ by comparison), so the supremum is nonnegative or positive infinity. With $R$ extant, \begin{itemize}
+            \item for $|z| < R$, $\sum a_n z^n$ is absolutely convergent
+            \item for $|z| > R$, $\sum a_n z^n$ diverges
+            \item Hadamard's Formula represents $R$ if it as a limit exists
+            \item $f(z) = \sum a_n z^n$ is analytic on the disk of convergence
+            \item The sequence can be differentiated term-by-term
+        \end{itemize}
+    \item Prove convergence inside the radius: fix $|z| < \rho < R$, then $|a_n|\rho^n$ is bounded:
+            \[|a_n|\rho^n \leq M\]
+            \[|a_n| \leq \frac{M}{\rho^n}\]
+            \[\downarrow\]
+            \[|a_n||z|^n \leq \frac{M|z|^n}{\rho^n} \rightarrow 0 \text{ geometrically}\]
+        By comparison to the convergent geometric series, $\sum |a_n||z|^n$ converges too
+    \item Absolute convergence indeed will imply convergence because the partial sums are cauchy
+            \[|S_M - S_N| = \left|\sum_{N+1}^M a_n z^n\right| \leq \sum_{N+!}^M |a_n| |z|^n = T_M - T_N\]
+            \[T_N \rightarrow T \Rightarrow |T_M - T_N| = T_M - T_N < \ep\]
+            \[|S_M - S_N| < \ep  \Rightarrow S_N \rightarrow S\]
+    \item Prove divergence outside radius: fix $|z| > R$
+            \[|z| > R = \sup S \Rightarrow |z| \notin S\]
+            \[|a_n||z|^n \nrightarrow 0 \Rightarrow a_n z^n \nrightarrow 0 \Rightarrow \sum a_n z^n \text{ diverges}\]
+\end{itemize}
+
+\subsection{Apr 3: Hardymardy}
+\begin{itemize}
+    \item Assume $\sqrt[n]{|a_n|} \rightarrow l \geq 0$, and fix $|z| < R$. By downward closure, 
+            \[|a_n||z|^n \leq M > 0\]
+            \[\sqrt[n]{|a_n|}|z| \leq \sqrt[n]{M}\]
+            \[\downarrow n \text{ large}\]
+            \[l |z| \leq 1\]
+        Therefore,
+            \[|z| < R \Rightarrow |z| \leq \frac{1}{l}\]
+            \[R \leq \frac{1}{l}\]
+    \item Now assume $l|z| < 1$ and $|z| \neq 0$
+            \[l < \frac{1}{|z|}\]
+            \[\uparrow n \text{ large}\]
+            \[\sqrt[n]{|a_n|} < \frac{1}{|z|}\]
+            \[|a_n||z|^n < 1\]
+        Just let $M$ be the maximum of the terms where $n$ is too small and $1$, a universal bound.
+            \[|z| \leq \sup S = R\]
+            \[|z| < \frac{1}{l} \Rightarrow |z| \leq R\]
+            \[\frac{1}{l} \leq R\]
+        There are slight holes here; $l = \infty$ forces $\frac{1}{l}$ to be $\leq R$ anyway; for $l = 0$, $\sqrt[n]{|a_n|}|z|$ is still $< 1$ for large $n$
+    \item Summarily, $\frac{1}{l} = R$
+\end{itemize} 
+
+\subsection{Apr 5: Power Analytics}
+\begin{itemize}
+    \item Define two series, $\sum a_n z^n$ and $\sum (n+1) a_{n+1} z^n$. The radii of convergence $R_1, R_2$ must be equal
+            \[\rho < R_2 \Rightarrow \forall n, (n+1)|a_{n+1}|\rho^n < L\]
+            \[|a_{n+1}|\rho^n < L\]
+            \[\forall n \geq 1, |a_n|\rho^{n-1} < L\]
+            \[\forall n \geq 1, |a_n|\rho^n < \rho L\]
+        Make up a bound $R_1 = \max\{\rho L,|a_0|\}$ that bounds $|a_n|\rho^n$,
+            \[\rho < R_2 \Rightarrow \rho \leq R_1\]
+            \[R_2 \leq R_1\]
+        Now,
+            \[r < R_1, \rho < r\]
+            \[u = \frac{\rho}{r} < 1\]
+            \[|a_n|r^n < M\]
+            \[|a_{n+1}|r^{n+1} < M\]
+            \[|a_{n+1}|r^n < \frac{M}{r}\]
+            \[(n+1)|a_{n+1}|(\rho u)^n = ((n+1)u^n)(|a_{n+1}r^n|) \rightarrow \leq 0 \frac{M}{r}\]
+            \[(n+1)|a_{n+1}|(\rho u)^n < L\]
+            \[\rho < R_1 \Rightarrow \rho \leq R_2\]
+            \[R_1 \leq R_2\]
+            \[R_1 = R_2\]
+    \item Use compact starry $K$ and define $||f||_K = \displaystyle \sup_{z \in K} |f(z)|$. Provided:
+            \[f_n \text{ analytic on K}\]
+            \[\forall z \in K, f_n(z) \rightarrow f(z)\]
+            \[||f_n' - g||_K \rightarrow 0\]
+            \[f_n(p) = c, \text{ p is a starcenter}\]
+        Then $f$ analytic on $K^\circ$ and $f' = g$ on $K^\circ$
+\end{itemize}
+
+\subsection{Apr 22: Powerful Testing}
+\begin{itemize}
+    \item $K$ is compact nonempty and box-convex to one point $p$, and recall the sup-norm notation from earlier; Prove that if analytic on $K$ $f_n = c$ at $p$, $f_n$ approaches $f$ at each point, and $f_n'$ which will be also analytic approaches $g$ uniformly ($||f_n' - g||_K \rightarrow 0$), then $f' = g$ on $K^\circ$
+    \item $g$ must be continuous at $z \in K$: 
+            \[|g(z) - g(w)| \leq |g(z) - f_n'(z)| + |f_n'(z) - f_n'(w)| + |f_n'(w) - g(w)|\]
+            \[\leq 2||g - f_n'||_K +|f_n'(z) - f_n'(w)| \overset{n \rightarrow \infty}{\underset{z \rightarrow w}{\longrightarrow}} 0\]
+\end{itemize}
+
+\subsection{Apr 23: Power Overwhelming}
+\begin{itemize}
+    \item Now, to prove $\int_p^{z+h} g(w) dw - \int_p^z g(w) dw = \int_z^{z+h} g(w) dw$ with $z \in K^\circ$ and small $h$, a triviality on $\R$ but not so anymore!
+    \item Consider the loop $\lambda = \overrightarrow{pz}\cat\overrightarrow{z(z+h)}\cat\overrightarrow{(z+h)p}$, the loop integral must be $0$, which is heavily reminiscient of C-G, alas $g$ is not yet known to possess analyticity!
+    \item Solve this by knowing $f_n'$ is analytic, and uniform convergence to $g$ is strong enough; the integral of the uniform limit is the same as the limit of the integrals, all of which are $0$ by C-G.
+    \item New reasoning to finish:
+            \[\left|f_n(z) - c - \int_p^z g(w) dw\right|\]
+            \[= \left|f_n(z) - f_n(p) - \int_p^z g(w) dw\right|\]
+            \[= \left|\int_p^z f_n'(w) dw - \int_p^z g(w) dw\right|\]
+            \[= \left|\int_p^z (f_n'(w) - g(w)) dw\right|\]
+            \[\leq |z-p| \sup_{w \in [\overrightarrow{pz}]} |f_n'(w) - g(w)|\rightarrow 0\]
+            \[f(z) = \lti{n} f_n(z) = c + \int_p^z g(w) dw\]
+            \[\vdots\]
+            \[f'(z) = 0 + g(z)\]
+\end{itemize}
+
+\subsection{Apr 24: Attaining 9001}
+\begin{itemize}
+    \item Time to apply the above theorem!
+            \[f_n(z) = \sum_{k=0}^n a_k z^k\]
+            \[p = 0 \quad \quad f_n(p) = a_0\]
+            \[K = \bar{D}_\rho (0), \rho < R\]
+        This set is boxconcex to the origin
+            \[f(z) = \sum_{k=0}^\infty a_k z^k\]
+            \[g(z) = \sum_{k=0}^\infty (k+1)a_{k+1} z^k\]
+    \item Pointwise convergence of $f_n(z)$ is true as long as the power series converges, which it does in the closed disk. Uniform convergence of the derivatives is harder to prove:
+            \[f_n'(z) = \sum_{k=1}^n k a_k z^{k-1}\]
+        The terms are stable, meaning that no early term changes as $n$ increases. 
+            \[||f_n' - g||_K = \sup_{z \in K} \left|\sum_{k=n}^\infty (k+1)a_{k+1}z^k\right|\]
+            \[\leq \sup_{z \in K} \sum_{k=n}^\infty (k+1)|a_{k+1}||z^k|\]
+            \[\leq \sup_{z \in K} \sum_{k=n}^\infty (k+1)|a_{k+1}|\rho^k\]
+            \[= \sum_{k > n} (k+1) |a_{k+1}| \rho^k = T - T_n\]
+        $T$ being the infinite series of the above, which absolutely converges by the disk of convergence having radius larger than $\rho$
+            \[T - T_n \rightarrow 0\]
+    \item As a conclusion, $f' = g$, and they both are analytic on the disk $K^\circ$. Simply let $\rho \rightarrow R$ to achieve the result for the whole open disk of convergence!
+\end{itemize}
+
+\subsection{May 17: Homology Unchained}
+\begin{itemize}
+    \item C-G on box-convex to one point regions is very limiting, and the condition is really not necessary. The absence of holes, which the loop may wind around, is enough
+    \item Simple connectivity codifies "no holes": simply connected region $U$ has 
+            \[(\forall p \in U^C)(\exists \gamma : [0.\infty) \overset{C^0}{\rightarrow} U^C : (\gamma(0) = p \land \gamma(\infty) = \infty)\]
+        i.e. there is always a "path" from anywhere in the complement to infinity
+    \item Formal sums of paths:
+            \[\mathcal{P}(U) \text{ is all piecewise smooth paths in } U\]
+            \[\mathcal{F}(U) \text{ is all formal sums of piecewise smooth paths in } U\]
+        formal sums being maps of $\gamma \in \mathcal{P}$ to $\Z$, almost every one to $0$ so that finite terms appear in the formal expression, 
+            \[[n_1]\gamma_1 + [n_2]\gamma_2 + \hdots + [n_k]\gamma_k\]
+        Sums of formal sums and integer scaling of formal sums work as usual
+\end{itemize}
+
+\subsection{May 20: Black Tie Sums}
+\begin{itemize}
+    \item Concatenation of linked paths is nice but not commutative, which is a real bummer. 
+    \item Take the very different formal sums:
+            \[a = [n] \gamma_1 + [n]\gamma_2\]
+            \[b = [n] \gamma_1 \cat \gamma_2\]
+        They are now equivalent, in one chain!
+            \[a \sim b \quad \quad \{b | b \sim a\} \in \mathcal{C} (U)\]
+            \[\mathcal{C} (U) \text{ is all chains in } U\]
+        In practice, it is not too useful to distinguish between formal sum $a$ and its equivalence class, so just use $=$ and be careful
+            \[a = b \quad a, b \in \mathcal{C} (U)\]
+    \item Formal definitions of equivalence:
+            \[a = a\]
+            \[[n] \gamma_1 \cat \gamma_2 = [n] \gamma_1 + [n] \gamma_2\]
+            \[[-n] \gamma = [n] \gamma^-\]
+            \[\gamma_1 \simeq \gamma_2 \Rightarrow [n]\gamma_1 = [n]\gamma_2\]
+        and others, ripped right from arithmetic
+\end{itemize}
+
+\subsection{May 22: Carcharia Culex}
+\begin{itemize}
+    \item The definition of equivalence is obviously made with path integrals in mind; concatenation of paths forms a chain that is made by a sum, and reversal is scaling by $-1$
+    \item To flesh out equivalence with formality: Any of the four rules above can be used to convert one formal sum to an equivalent one. Assume $\gamma_3$ and $\gamma_4$ are linked but nothing else,
+            \[[2]\gamma_2 + [-3]\gamma_2^- + [4]\gamma_3 + [4]\gamma_4\]
+            \[= [2]\gamma_2 + [3]\gamma_2 + [4]\gamma_3 \cat \gamma_4\]
+        Each termwise rule can be extended to many terms
+    \item Now it can be proved that equivalence really is equivalence; reflexion is directly addressed, symmetry by the reversibility of the rules, transition by the composition of rules
+    \item Finally, it is possible to prove that the operations on chains don't depend on which formal sums in each class are used, again by composition of rules on each input
+\end{itemize}
+
+\subsection{May 23: C-G Up!}
+\begin{itemize}
+    \item 1-chains are one-dimensional; n-chains exist too. 0-chains specifically, are equivalence classes of formal sums of points, which is the same as the formal sums themselves since there is no concatenation of points, so no equivalence
+    \item Adopt the boundary operator $\partial$ from sets to 1-chains,
+            \[\partial a = \sum_\gamma \big([a(\gamma)] \gamma_{fin} + [-a(\gamma)] \gamma_{init}\big)\]
+        which is a 0-chain. Conveniently, $\partial$ is linear, and $\partial [1]\gamma + \partial [1]\gamma^- = [0]$
+    \item All formal sums of a loop will have a boundary of $0$, but so will formal sums of many loops; this is useful enough to be classified as a cycle
+            \[\mathcal{Z}(U) \text{ is the cycles in } U \in \mathcal{C}(U)\]
+    \item Any cycle has the set of initial points equal to the set of final points
+    \item The pinnacle of C-G: $f$ analytic on simply connected $U$ has $\int_a f = 0$ when $a$ is a cycle; to integrate on a chain, just integrate over each path in the formal sum, counting coefficients. Equivalence constructed this way gives the same answer for any formal sum in the chain. Of course, this works for cycles that represent a single loop too.
+\end{itemize}
+
+\subsection{That's a Wrap!}
+\end{document}
+  
